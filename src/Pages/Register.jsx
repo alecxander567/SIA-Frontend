@@ -12,7 +12,7 @@ function Register() {
         password: ""
     });
     const [successMessage, setSuccessMessage] = useState("");
-    const [showPassword, setShowPassword] = useState(false); // 👁️ state
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,8 +48,6 @@ function Register() {
                 <FaUser className="text-black" />
                 Sign Up
                 </h2>
-
-                {/* ✅ Success Alert */}
                 {successMessage && (
                 <div className="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-400">
                     {successMessage}
@@ -64,8 +62,6 @@ function Register() {
                 >
                     <FaArrowLeft />
                 </a>
-
-                {/* First and Last Name */}
                 <div className="flex gap-4">
                     <div className="w-1/2">
                     <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
@@ -98,8 +94,6 @@ function Register() {
                     />
                     </div>
                 </div>
-
-                {/* Email and Position */}
                 <div className="flex gap-4">
                     <div className="w-1/2">
                     <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
@@ -132,8 +126,6 @@ function Register() {
                     />
                     </div>
                 </div>
-
-                {/* Password */}
                 <div>
                     <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
                         <FaLock />

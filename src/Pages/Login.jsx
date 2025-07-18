@@ -69,7 +69,7 @@ function Login() {
             <div className="relative">
               <input
                 name="password"
-                type={showPassword ? "text" : "password"} // 👁️ toggle type
+                type={showPassword ? "text" : "password"} 
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black placeholder-gray-700 focus:outline-none focus:ring focus:ring-blue-300"

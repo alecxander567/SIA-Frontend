@@ -7,21 +7,17 @@ function Landingpage() {
     return(
         <div className="flex flex-col min-h-screen">
             <main className="flex-grow">
-                {/* Navbar */}
                 <nav className="bg-white shadow-md px-8 flex items-center justify-between">
-                    {/* Left: Logo and Title */}
                         <div className="flex items-center space-x-2">
                         <div className="flex items-center space-x-2">
                                 <img
-                                    src="/logo.jpg" // path relative to public/
+                                    src="/logo.jpg" 
                                     alt="Logo"
                                     className="w-15 h-15 rounded-full object-cover"
                                 />
                                 <h1 className="text-2xl font-bold text-black">N-Tech Hardware</h1>
                             </div>
                         </div>
-
-                        {/* Center: Nav Links */}
                         <div className="space-x-6 text-black font-medium">
                             <a href="#home" className="hover:text-gray-600">Home</a>
                             <a href="#products" className="hover:text-gray-600">Products</a>
@@ -29,8 +25,6 @@ function Landingpage() {
                             <a href="#about" className="hover:text-gray-600">About Us</a>
                             <a href="#contacts" className="hover:text-gray-600">Contacts</a>
                         </div>
-
-                        {/* Right: Login / Sign Up */}
                         <div className="space-x-3">  
                             <Link to="/login">
                                 <button className="px-6 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition">
@@ -47,7 +41,6 @@ function Landingpage() {
 
                     <section className="bg-gradient-to-r from-black via-black to-gray-100 text-white pl-32 pr-10 pt-40 pb-10 min-h-screen flex items-start" id="home">
                         <div className="flex flex-col md:flex-row w-full items-start justify-between">
-                            {/* Left Content */}
                             <div className="max-w-xl text-left">
                                 <h2 className="text-4xl font-bold mb-6">Welcome to N-Tech Hardware</h2>
                                 <p className="text-lg mb-8">
@@ -67,8 +60,6 @@ function Landingpage() {
                                     </Link>
                                 </div>
                             </div>
-
-                            {/* Right Image */}
                             <div className="mt-10 md:mt-0 md:-ml-10">
                                 <img
                                     src="/grinder.png"
@@ -79,12 +70,10 @@ function Landingpage() {
                         </div>
                     </section>
 
-                    {/* Product Section */}
                     <section className="py-10 px-10 bg-white" id="products">
                         <h3 className="text-5xl font-bold text-center mb-10 text-black">Our Products</h3>
                         <hr></hr>
                         <div className="grid md:grid-cols-3 gap-10 text-center">
-                            {/* Product Card */}
                             {[{
                                 src: "/grill.png",
                                 alt: "Cordless Drill",
@@ -123,12 +112,9 @@ function Landingpage() {
                         </div>
                     </section>
 
-                    {/* Services Section */}
                     <section className="py-5 px-10 bg-gray-50" id="services">
                         <h3 className="text-5xl font-bold text-center mb-10">Our Services</h3>
                         <div className="grid md:grid-cols-3 gap-10 text-center">
-
-                            {/* Service 1 */}
                             <div className="shadow-lg p-6 rounded-lg bg-white">
                                 <div className="flex justify-center mb-4">
                                     <Wrench className="w-10 h-10 text-blue-600" />
@@ -136,8 +122,6 @@ function Landingpage() {
                                 <h4 className="text-xl font-semibold mb-2">Tool Repair</h4>
                                 <p>Expert repair services for all kinds of power tools with quick turnaround time.</p>
                             </div>
-
-                            {/* Service 2 */}
                             <div className="shadow-lg p-6 rounded-lg bg-white">
                                 <div className="flex justify-center mb-4">
                                     <PackageCheck className="w-10 h-10 text-green-600" />
@@ -145,8 +129,6 @@ function Landingpage() {
                                 <h4 className="text-xl font-semibold mb-2">Free Delivery</h4>
                                 <p>Enjoy free and fast delivery for all your orders—straight to your doorstep.</p>
                             </div>
-
-                            {/* Service 3 */}
                             <div className="shadow-lg p-6 rounded-lg bg-white">
                                 <div className="flex justify-center mb-4">
                                     <PlayCircle className="w-10 h-10 text-yellow-500" />
@@ -160,8 +142,6 @@ function Landingpage() {
 
                     <section className="py-16 px-10 bg-white" id="about">
                         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                            
-                            {/* Text Content */}
                             <div>
                             <h3 className="text-5xl font-bold mb-6">About Us</h3>
                             <p className="text-gray-600 text-lg leading-relaxed">
@@ -170,24 +150,19 @@ function Landingpage() {
                                 We are committed to excellent customer service, timely delivery, and innovative solutions to make your projects easier and more efficient.
                             </p>
                             </div>
-
-                            {/* Image */}
                             <div className="flex justify-center">
                             <img
-                                src="/plumber.png" // replace this with your actual image path
+                                src="/plumber.png"
                                 alt="About ToolHaven"
                                 className="w-[350px] h-auto rounded-lg shadow-md object-cover"
                             />
                             </div>
-
                         </div>
                     </section>
             </main>
 
            <footer className="bg-black text-white py-10 px-6" id="contacts">
             <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-                
-                {/* Contact Info */}
                 <div className="text-center md:text-left space-y-2">
                 <h4 className="text-xl font-semibold mb-3">Contact Us</h4>
                 <p className="flex items-center justify-center md:justify-start gap-2">
@@ -200,8 +175,6 @@ function Landingpage() {
                     <FaEnvelope /> support@toolhaven.com
                 </p>
                 </div>
-
-                {/* Social Media */}
                 <div className="text-center md:text-left space-y-2">
                 <h4 className="text-xl font-semibold mb-3">Follow Us</h4>
                 <div className="flex justify-center md:justify-start gap-4 text-2xl">
@@ -210,8 +183,6 @@ function Landingpage() {
                     <a href="#" className="hover:text-pink-500"><FaInstagram /></a>
                 </div>
                 </div>
-
-                {/* Copyright */}
                 <div className="flex items-center justify-center md:justify-end text-center md:text-right">
                 <p>&copy; {new Date().getFullYear()} N-Tech Hardware. All rights reserved.</p>
                 </div>
