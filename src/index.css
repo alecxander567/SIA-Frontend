@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* index.css or global.css */
+
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
