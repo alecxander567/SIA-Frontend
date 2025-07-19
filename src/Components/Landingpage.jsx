@@ -1,71 +1,119 @@
 import { Wrench, PackageCheck, PlayCircle } from "lucide-react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaPhoneAlt, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
 import '../index.css'
 import { Link } from 'react-router-dom';
+import { useState } from "react";
 
 function Landingpage() {
+    const [isOpen, setIsOpen] = useState(false);
+    
     return(
         <div className="flex flex-col min-h-screen">
             <main className="flex-grow">
-                <nav className="bg-white shadow-md px-8 flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-2">
-                                <img
-                                    src="/logo.jpg" 
-                                    alt="Logo"
-                                    className="w-15 h-15 rounded-full object-cover"
-                                />
-                                <h1 className="text-2xl font-bold text-black">N-Tech Hardware</h1>
-                            </div>
-                        </div>
-                        <div className="space-x-6 text-black font-medium">
-                            <a href="#home" className="hover:text-gray-600">Home</a>
-                            <a href="#products" className="hover:text-gray-600">Products</a>
-                            <a href="#services" className="hover:text-gray-600">Services</a>
-                            <a href="#about" className="hover:text-gray-600">About Us</a>
-                            <a href="#contacts" className="hover:text-gray-600">Contacts</a>
-                        </div>
-                        <div className="space-x-3">  
+                <nav className="bg-white shadow-md px-4 sm:px-6 md:px-8 py-2 flex items-center justify-between relative z-50">
+                    {/* Logo */}
+                    <div className="flex items-center space-x-3">
+                        <img
+                        src="/logo.jpg"
+                        alt="Logo"
+                        className="w-12 h-12 rounded-full object-cover"
+                        />
+                        <h1 className="text-xl sm:text-2xl font-bold text-black">
+                        N-Tech Hardware
+                        </h1>
+                    </div>
+
+                    {/* Desktop Links */}
+                    <div className="hidden md:flex space-x-6 text-black font-medium">
+                        <a href="#home" className="hover:text-gray-600">Home</a>
+                        <a href="#products" className="hover:text-gray-600">Products</a>
+                        <a href="#services" className="hover:text-gray-600">Services</a>
+                        <a href="#about" className="hover:text-gray-600">About Us</a>
+                        <a href="#contacts" className="hover:text-gray-600">Contacts</a>
+                    </div>
+
+                    {/* Desktop Buttons */}
+                    <div className="hidden md:flex space-x-3">
+                        <Link to="/login">
+                        <button className="px-6 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition">
+                            Log In
+                        </button>
+                        </Link>
+                        <Link to="/signup">
+                        <button className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition">
+                            Register
+                        </button>
+                        </Link>
+                    </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="md:hidden text-black text-2xl"
+                    >
+                        {isOpen ? <FaTimes /> : <FaBars />}
+                    </button>
+
+                    {/* Mobile Dropdown Menu with animation */}
+                        <div
+                            className={`absolute top-full left-0 w-full bg-white shadow-md overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
+                            isOpen ? "max-h-[500px] opacity-100 py-6" : "max-h-0 opacity-0 py-0"
+                            }`}
+                        >
+                            <div className="flex flex-col items-center space-y-4 text-black font-medium">
+                            <a href="#home" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Home</a>
+                            <a href="#products" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Products</a>
+                            <a href="#services" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Services</a>
+                            <a href="#about" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>About Us</a>
+                            <a href="#contacts" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Contacts</a>
                             <Link to="/login">
-                                <button className="px-6 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition">
-                                    Log In
+                                <button className="px-6 py-2 border border-black text-black rounded-full hover:bg-black hover:text-white transition w-40">
+                                Log In
                                 </button>
                             </Link>
                             <Link to="/signup">
-                                <button className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition">
-                                    Register
+                                <button className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition w-40">
+                                Register
                                 </button>
                             </Link>
+                            </div>
                         </div>
                     </nav>
 
-                    <section className="bg-gradient-to-r from-black via-black to-gray-100 text-white pl-32 pr-10 pt-40 pb-10 min-h-screen flex items-start" id="home">
-                        <div className="flex flex-col md:flex-row w-full items-start justify-between">
-                            <div className="max-w-xl text-left">
-                                <h2 className="text-4xl font-bold mb-6">Welcome to N-Tech Hardware</h2>
-                                <p className="text-lg mb-8">
-                                    Your one-stop shop for hardware needs
-                                </p>
-                                
-                                <div className="space-x-4">
-                                    <Link to="/signup">
-                                        <button className="bg-white text-gray-900 px-6 py-3 rounded-lg hover:bg-gray-200 transition">
-                                            Register account
-                                        </button>
-                                    </Link>
-                                    <Link to="/login">
-                                        <button className="bg-transparent border border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-gray-900 transition">
-                                            Log in account
-                                        </button>
-                                    </Link>
-                                </div>
+                    <section
+                        className="bg-gradient-to-r from-black via-black to-gray-100 text-white px-4 sm:px-6 md:px-10 lg:px-20 pt-20 pb-10 min-h-screen flex items-center justify-center"
+                        id="home"
+                        >
+                        <div className="flex flex-col md:flex-row w-full items-center md:items-start justify-between gap-10">
+                            <div className="max-w-xl text-center md:text-left flex flex-col items-center md:items-start">
+                            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+                                Welcome to N-Tech Hardware
+                            </h2>
+                            <p className="text-base sm:text-lg mb-8">
+                                Your one-stop shop for hardware needs
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <Link to="/signup">
+                                <button className="bg-white text-gray-900 px-6 py-3 rounded-lg hover:bg-gray-200 transition">
+                                    Register account
+                                </button>
+                                </Link>
+                                <Link to="/login">
+                                <button className="bg-transparent border border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-gray-900 transition">
+                                    Log in account
+                                </button>
+                                </Link>
                             </div>
-                            <div className="mt-10 md:mt-0 md:-ml-10">
-                                <img
-                                    src="/grinder.png"
-                                    alt="Hardware Showcase"
-                                    className="w-[500px] h-auto rounded-lg object-cover"
-                                />
+                            </div>
+
+                            {/* Image hidden on small screens */}
+                            <div className="hidden md:block">
+                            <img
+                                src="/grinder.png"
+                                alt="Hardware Showcase"
+                                className="max-w-[500px] h-auto rounded-lg object-cover"
+                            />
                             </div>
                         </div>
                     </section>

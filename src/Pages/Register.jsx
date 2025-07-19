@@ -115,15 +115,18 @@ function Register() {
                         <FaBriefcase />
                         Position
                     </label>
-                    <input
-                        type="text"
+                    <select
                         name="position"
                         value={formData.position}
                         onChange={handleChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black"
-                        placeholder="e.g. Manager"
                         required
-                    />
+                        >
+                        <option value="">Select a position</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Delivery Guy">Rider</option>
+                        <option value="Rider">Human Resource</option>
+                    </select>
                     </div>
                 </div>
                 <div>

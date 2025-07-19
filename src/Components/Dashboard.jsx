@@ -1,10 +1,13 @@
-import { FaTachometerAlt, FaBox, FaClipboardList, FaChartBar, FaBell, FaSignOutAlt, FaSearch, FaChartLine, FaFire } from "react-icons/fa";
+import { FaTachometerAlt, FaBox, FaClipboardList, FaChartBar, FaBell, FaSignOutAlt, FaSearch, FaChartLine, FaFire, FaCog,  FaBars, FaTimes } from "react-icons/fa";
 import { Users, DollarSign, Package, AlertCircle } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line,XAxis,YAxis, ResponsiveContainer} from 'recharts';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
 
 function Dashboard() {
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
 
     const data = [
         { name: 'Sold Items', value: 320 },
@@ -34,55 +37,71 @@ function Dashboard() {
         { month: 'Dec', profit: 22000, expense: 14000 },
     ];
 
-     const handleLogout = async () => {
+    const handleLogout = async () => {
         try {
-        await fetch("http://localhost:8080/api/employees/logout", {
-            method: "POST",
-        });
-        localStorage.removeItem("user"); 
-        navigate("/");
+            await axios.post("http://localhost:8080/api/employees/logout");
+            localStorage.removeItem("user");
+            navigate("/");
         } catch (error) {
-        console.error("Logout failed:", error);
+            console.error("Logout failed:", error);
         }
     };
 
     return(
         <div className="flex h-screen bg-gray-900 text-white">
-            <aside className="w-64 bg-black p-6 flex flex-col justify-between">
+            <button
+                className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                {isOpen ? <FaTimes /> : <FaBars />}
+            </button>
+
+            <aside
+                className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
+                isOpen ? "translate-x-0" : "-translate-x-full"
+                } md:translate-x-0 md:static md:flex`}
+            >
                 <div>
-                    <div className="mb-4">
-                        <img
-                            src="/logo.jpg"
-                            alt="Logo"
-                            className="w-16 h-16 rounded-full object-cover mx-auto"
-                        />
-                    </div>
-                    <h2 className="text-2xl font-bold text-center mb-6">N-Tech Hardware</h2>
-                    <nav className="space-y-4">
-                        <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                            <FaTachometerAlt /> Dashboard
-                        </a>
-                        <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                            <FaBox /> Inventory
-                        </a>
-                        <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                            <FaClipboardList /> Orders
-                        </a>
-                        <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                            <FaChartBar /> Reports
-                        </a>
-                        <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                            <FaBell /> Notifications
-                        </a>
-                    </nav>
+                <div className="mb-4">
+                    <img
+                    src="/logo.jpg"
+                    alt="Logo"
+                    className="w-16 h-16 rounded-full object-cover mx-auto"
+                    />
                 </div>
+                <h2 className="text-2xl font-bold text-center mb-6 text-white">
+                    N-Tech Hardware
+                </h2>
+
+                <nav className="space-y-4 text-white">
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <FaTachometerAlt /> Dashboard
+                    </a>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <FaBox /> Inventory
+                    </a>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <FaClipboardList /> Orders
+                    </a>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <FaChartBar /> Reports
+                    </a>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <FaBell /> Notifications
+                    </a>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <FaCog /> Settings
+                    </a>
+                </nav>
+                </div>
+
                 <div>
-                    <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-                        >
-                        <FaSignOutAlt /> Logout
-                    </button>
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white"
+                >
+                    <FaSignOutAlt /> Logout
+                </button>
                 </div>
             </aside>
 
@@ -135,75 +154,75 @@ function Dashboard() {
                     </div>
 
                     <div className="flex flex-wrap gap-6 px-10 pb-10">
-                    <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg text-black">
-                        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                            <FaChartLine className="text-gray-700" />
-                            Sales Overview
-                        </h2>
-                        <div className="flex justify-center">
-                        <PieChart width={300} height={250}>
-                            <defs>
-                            <linearGradient id="gradient-0" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%" stopColor="#ff0000" />
-                                <stop offset="100%" stopColor="#ffa500" />
-                            </linearGradient>
-                            <linearGradient id="gradient-1" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%" stopColor="#ff4500" />
-                                <stop offset="100%" stopColor="#ffd700" />
-                            </linearGradient>
-                            <linearGradient id="gradient-2" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%" stopColor="#e60000" />
-                                <stop offset="100%" stopColor="#ffb347" />
-                            </linearGradient>
-                            </defs>
-                            <Pie
-                                data={data}
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                dataKey="value"
-                                label={({ name, percent, x, y }) => (
-                                    <text
-                                    x={x}
-                                    y={y}
-                                    fill="#000"
-                                    textAnchor="middle"
-                                    dominantBaseline="central"
-                                    fontSize={12}
+                        <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg text-black">
+                            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                <FaChartLine className="text-gray-700" />
+                                Sales Overview
+                            </h2>
+                            <div className="flex justify-center">
+                            <PieChart width={300} height={250}>
+                                <defs>
+                                <linearGradient id="gradient-0" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stopColor="#ff0000" />
+                                    <stop offset="100%" stopColor="#ffa500" />
+                                </linearGradient>
+                                <linearGradient id="gradient-1" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stopColor="#ff4500" />
+                                    <stop offset="100%" stopColor="#ffd700" />
+                                </linearGradient>
+                                <linearGradient id="gradient-2" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stopColor="#e60000" />
+                                    <stop offset="100%" stopColor="#ffb347" />
+                                </linearGradient>
+                                </defs>
+                                <Pie
+                                    data={data}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={80}
+                                    dataKey="value"
+                                    label={({ name, percent, x, y }) => (
+                                        <text
+                                        x={x}
+                                        y={y}
+                                        fill="#000"
+                                        textAnchor="middle"
+                                        dominantBaseline="central"
+                                        fontSize={12}
+                                        >
+                                        {`${name}: ${(percent * 100).toFixed(0)}%`}
+                                        </text>
+                                    )}
+                                    labelLine={false}
                                     >
-                                    {`${name}: ${(percent * 100).toFixed(0)}%`}
-                                    </text>
-                                )}
-                                labelLine={false}
-                                >
-                                {data.map((entry, index) => (
-                                    <Cell
-                                    key={`cell-${index}`}
-                                    fill={
-                                        entry.name === "Remaining Items"
-                                        ? "#e0e0e0"
-                                        : `url(#gradient-${index})`
-                                    }
-                                    />
-                                ))}
-                            </Pie>
+                                    {data.map((entry, index) => (
+                                        <Cell
+                                        key={`cell-${index}`}
+                                        fill={
+                                            entry.name === "Remaining Items"
+                                            ? "#e0e0e0"
+                                            : `url(#gradient-${index})`
+                                        }
+                                        />
+                                    ))}
+                                </Pie>
 
-                                <Tooltip
-                                contentStyle={{
-                                    backgroundColor: "#fff",
-                                    border: "1px solid #ccc",
-                                    color: "#000"
-                                }}
-                                itemStyle={{ color: "#000" }}
-                                labelStyle={{ color: "#000" }}
-                            />
-                            <Legend
-                                wrapperStyle={{ color: "#000" }}
-                                formatter={(value) => <span style={{ color: "#000" }}>{value}</span>}
-                            />
-                        </PieChart>
+                                    <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: "#fff",
+                                        border: "1px solid #ccc",
+                                        color: "#000"
+                                    }}
+                                    itemStyle={{ color: "#000" }}
+                                    labelStyle={{ color: "#000" }}
+                                />
+                                <Legend
+                                    wrapperStyle={{ color: "#000" }}
+                                    formatter={(value) => <span style={{ color: "#000" }}>{value}</span>}
+                                />
+                            </PieChart>
+                            </div>
                         </div>
-                    </div>
 
                         {/* Top 10 Sold Items */}
                         <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg">
