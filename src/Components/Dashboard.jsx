@@ -73,7 +73,7 @@ function Dashboard() {
                     N-Tech Hardware
                 </h2>
 
-                <nav className="space-y-4 text-white">
+                <nav  className="space-y-4 text-white">
                     <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaTachometerAlt /> Dashboard
                     </a>
@@ -107,51 +107,51 @@ function Dashboard() {
 
             <main className="flex-1 bg-gray-500 text-black overflow-y-auto">
                 <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
-                    <div></div> 
                     <div className="flex items-center gap-2">
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        className="w-64 bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button className="bg-white text-black p-2 px-4 rounded-md hover:bg-gray-200">
-                        <FaSearch />
-                    </button>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            className="w-64 bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button className="bg-white text-black p-2 px-4 rounded-md hover:bg-gray-200">
+                            <FaSearch />
+                        </button>
                     </div>
                 </header>
 
                 <div className="p-10">
                     <div className="flex flex-wrap justify-center gap-6">
-                        <div className="w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-                            <Users className="text-blue-500" size={36} />
-                            <div className="flex flex-col justify-between h-full">
+                        <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
+                        <Users className="text-blue-500" size={36} />
+                        <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Total Customers</p>
                             <p className="text-2xl font-bold text-black">1,250</p>
-                            </div>
                         </div>
-                        <div className="w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-                            <DollarSign className="text-green-500" size={36} />
-                            <div className="flex flex-col justify-between h-full">
+                        </div>
+                        <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
+                        <DollarSign className="text-green-500" size={36} />
+                        <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Total Revenue</p>
                             <p className="text-2xl font-bold text-black">₱254,000</p>
-                            </div>
                         </div>
-                        <div className="w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-                            <Package className="text-purple-500" size={36} />
-                            <div className="flex flex-col justify-between h-full">
+                        </div>
+                        <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
+                        <Package className="text-purple-500" size={36} />
+                        <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Total Products</p>
                             <p className="text-2xl font-bold text-black">320</p>
-                            </div>
                         </div>
-                        <div className="w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-                            <AlertCircle className="text-red-500" size={36} />
-                            <div className="flex flex-col justify-between h-full">
+                        </div>
+                        <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
+                        <AlertCircle className="text-red-500" size={36} />
+                        <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Out of Stock</p>
                             <p className="text-2xl font-bold text-black">8</p>
-                            </div>
                         </div>
                         </div>
                     </div>
+                </div>
+
 
                     <div className="flex flex-wrap gap-6 px-10 pb-10">
                         <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg text-black">
