@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line,XAxis,YAxis, Resp
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { Link } from 'react-router-dom';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -74,12 +75,12 @@ function Dashboard() {
                 </h2>
 
                 <nav  className="space-y-4 text-white">
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <Link to="/dashboard" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaTachometerAlt /> Dashboard
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    </Link>
+                    <Link to="/inventory" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaBox /> Inventory
-                    </a>
+                    </Link>
                     <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaClipboardList /> Orders
                     </a>
@@ -107,6 +108,7 @@ function Dashboard() {
 
             <main className="flex-1 bg-gray-500 text-black overflow-y-auto">
                 <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
+                    <div></div> 
                     <div className="flex items-center gap-2">
                         <input
                             type="text"
