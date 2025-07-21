@@ -312,6 +312,7 @@ function Inventory() {
                   <img
                     src={`http://localhost:8080/${item.imagePath.replace(/\\/g, "/")}`}
                     alt="Item"
+                    onError={(e) => (e.target.src = "/fallback.jpg")}
                     className="w-full h-40 rounded-[10px] mb-2"
                   />
                 ) : (
@@ -327,13 +328,13 @@ function Inventory() {
 
                 <div className="mt-4 flex gap-2">
                   <button
-                        className="bg-gray-500 text-white text-base py-2 rounded-[10px] w-full hover:bg-gray-600"
+                        className="bg-gray-500 text-white text-base py-2 rounded-[5px] w-full hover:bg-gray-600"
                         onClick={() => setConfirmDeleteId(item.id)} 
                       >
                         Delete
                     </button>
                   <button
-                    className="bg-yellow-600 text-white text-base py-2 rounded-[10px] w-full hover:bg-yellow-700"
+                    className="bg-yellow-600 text-white text-base py-2 rounded-[5px] w-full hover:bg-yellow-700"
                     onClick={() => handleEdit(item)}
                   >     
                      Edit
@@ -355,8 +356,10 @@ function Inventory() {
                     <img
                       src={`http://localhost:8080/${item.imagePath.replace(/\\/g, "/")}`}
                       alt="Item"
+                      onError={(e) => (e.target.src = "/fallback.jpg")}
                       className="w-full h-40 rounded-[10px] mb-2"
                     />
+
                   ) : (
                     <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 rounded-[10px] mb-2">
                       No Image
@@ -370,13 +373,13 @@ function Inventory() {
 
                   <div className="mt-4 flex gap-2">
                     <button
-                        className="bg-gray-500 text-white text-base py-2 rounded-[10px] w-full hover:bg-gray-600"
+                        className="bg-gray-500 text-white text-base py-2 rounded-[5px] w-full hover:bg-gray-600"
                         onClick={() => setConfirmDeleteId(item.id)}
                       >
                         Delete
                       </button>
                     <button
-                      className="bg-yellow-600 text-white text-base py-2 rounded-[10px] w-full hover:bg-yellow-700"
+                      className="bg-yellow-600 text-white text-base py-2 rounded-[5px] w-full hover:bg-yellow-700"
                       onClick={() => handleEdit(item)}
                     >
                       Edit
@@ -387,27 +390,40 @@ function Inventory() {
             </div>
           )}
 
-          {confirmDeleteId !== null && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-              <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
-                <p className="text-lg mb-4">Are you sure you want to delete this item?</p>
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={() => handleDelete(confirmDeleteId)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => setConfirmDeleteId(null)}
-                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {confirmDeleteId !== null && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center"
+                >
+                  <p className="text-lg mb-4">Are you sure you want to delete this item?</p>
+                  <div className="flex justify-center gap-4">
+                    <button
+                      onClick={() => handleDelete(confirmDeleteId)}
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setConfirmDeleteId(null)}
+                      className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {alertMessage && (
             <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md">
