@@ -158,7 +158,7 @@ function Inventory() {
       category: "",
       quantity: "",
       picture: null,
-      id: null, // important to prevent edit mode logic
+      id: null,
     });
     setEditMode(false);
     setShowModal(true);
@@ -256,9 +256,9 @@ function Inventory() {
                     <Link to="/inventory" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaBox /> Inventory
                     </Link>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <Link to="/orders" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaClipboardList /> Orders
-                    </a>
+                    </Link>
                     <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaChartBar /> Reports
                     </a>
@@ -284,6 +284,7 @@ function Inventory() {
             <main className="flex-1 bg-gray-500 text-black overflow-y-auto">
               {/* Header */}
               <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
+                <h1 class="text-lg">Inventory</h1>
                 <div></div>
                 <div className="flex items-center gap-2">
                   <input
