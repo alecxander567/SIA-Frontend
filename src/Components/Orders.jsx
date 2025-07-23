@@ -34,90 +34,110 @@ function Orders() {
       orderNo: "1",
       item: "Hammer",
       customer: "Alex Reyes",
+      quantity: 2,
       price: "₱350",
       address: "Makati City",
       payment: "Gcash",
+      date: "2025-07-20",
       status: "Pending",
     },
     {
       orderNo: "2",
       item: "Screwdriver Set",
       customer: "Jenna Cruz",
+      quantity: 1,
       price: "₱600",
       address: "Quezon City",
       payment: "Credit Card",
+      date: "2025-07-19",
       status: "Delivered",
     },
     {
       orderNo: "3",
       item: "Cordless Drill",
       customer: "Leo Tan",
+      quantity: 1,
       price: "₱3,500",
       address: "Cebu City",
       payment: "Cash on Delivery",
+      date: "2025-07-18",
       status: "Delivered",
     },
     {
       orderNo: "4",
       item: "Adjustable Wrench",
       customer: "Mika Villanueva",
+      quantity: 3,
       price: "₱750",
       address: "Davao City",
       payment: "PayPal",
+      date: "2025-07-18",
       status: "Cancelled",
     },
     {
       orderNo: "5",
       item: "Circular Saw",
       customer: "Ronald Cruz",
+      quantity: 1,
       price: "₱6,000",
       address: "Taguig",
       payment: "Bank Transfer",
+      date: "2025-07-17",
       status: "Delivered",
     },
     {
       orderNo: "6",
       item: "Tape Measure",
       customer: "Sara Lim",
+      quantity: 4,
       price: "₱150",
       address: "Pasig",
       payment: "Gcash",
+      date: "2025-07-21",
       status: "Pending",
     },
     {
       orderNo: "7",
       item: "Chisel Set",
       customer: "Benny Uy",
+      quantity: 2,
       price: "₱950",
       address: "Caloocan",
       payment: "Credit Card",
+      date: "2025-07-20",
       status: "Delivered",
     },
     {
       orderNo: "8",
       item: "Handsaw",
       customer: "Aira Santos",
+      quantity: 1,
       price: "₱500",
       address: "Pasay",
       payment: "Gcash",
+      date: "2025-07-19",
       status: "Cancelled",
     },
     {
       orderNo: "9",
       item: "Ladder (6ft)",
       customer: "Jake Fernandez",
+      quantity: 1,
       price: "₱2,200",
       address: "Manila",
       payment: "Cash on Delivery",
+      date: "2025-07-22",
       status: "Pending",
     },
     {
       orderNo: "10",
       item: "Electric Sander",
       customer: "Nina Gutierrez",
+      quantity: 2,
       price: "₱3,800",
       address: "Mandaluyong",
       payment: "Credit Card",
+      date: "2025-07-18",
       status: "Delivered",
     },
   ];
@@ -287,40 +307,43 @@ function Orders() {
             </div> {/* ✅ <-- This was missing */}
 
             <div className="px-4 py-2">
-            <div className="grid grid-cols-7 font-semibold bg-black text-white py-2 px-2 rounded text-center">
+              <div className="grid grid-cols-9 font-semibold bg-black text-white py-2 px-2 rounded text-center">
                 <div className="px-2">Order No.</div>
                 <div className="px-2">Item Name</div>
                 <div className="px-2">Name of Customer</div>
+                <div className="px-2">Quantity</div>
                 <div className="px-2">Price</div>
                 <div className="px-2">Address</div>
                 <div className="px-2">Payment</div>
+                <div className="px-2">Date</div>
                 <div className="px-2">Status</div>
-            </div>
-
+              </div>
             {filteredOrders.map((order, index) => (
-                <div
+              <div
                 key={index}
-                className="grid grid-cols-7 py-2 px-2 border-b border-gray-300 bg-white text-black hover:bg-gray-800 hover:text-white transition text-center"
-                >
+                className="grid grid-cols-9 py-2 px-2 border-b border-gray-300 bg-white text-black hover:bg-gray-800 hover:text-white transition text-center"
+              >
                 <div className="px-2 truncate">{order.orderNo}</div>
                 <div className="px-2 truncate">{order.item}</div>
                 <div className="px-2 truncate">{order.customer}</div>
+                <div className="px-2 truncate">{order.quantity}</div>
                 <div className="px-2 truncate">{order.price}</div>
                 <div className="px-2 truncate">{order.address}</div>
                 <div className="px-2 truncate">{order.payment}</div>
+                <div className="px-2 truncate">{order.date}</div>
                 <div
-                    className={`rounded px-2 py-1 w-fit mx-auto font-semibold
+                  className={`rounded px-2 py-1 w-fit mx-auto font-semibold
                     ${order.status.toLowerCase() === "cancelled" ? "bg-red-500 text-white" : ""}
                     ${order.status.toLowerCase() === "pending" ? "bg-yellow-400 text-black" : ""}
                     ${order.status.toLowerCase() === "delivered" ? "bg-green-500 text-white" : ""}
                     ${order.status.toLowerCase() === "shipped" ? "bg-blue-500 text-white" : ""}
-                    `}
+                  `}
                 >
-                    {order.status}
+                  {order.status}
                 </div>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
         </main>
     </div>
   );
