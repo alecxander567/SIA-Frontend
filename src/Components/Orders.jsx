@@ -21,13 +21,12 @@ function Orders() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState(""); 
 
-  const [selectedDate, setSelectedDate] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0]; 
-  });
+  const formattedDate = selectedDate
+  ? new Date(selectedDate).toLocaleDateString("en-US")
+  : "All Dates";
 
-  const formattedDate = new Date(selectedDate).toLocaleDateString("en-US");
 
   const orders = [
     {
@@ -36,9 +35,9 @@ function Orders() {
       customer: "Alex Reyes",
       quantity: 2,
       price: "₱350",
-      address: "Makati City",
+      address: "Toril, Davao City",
       payment: "Gcash",
-      date: "2025-07-20",
+      date: "2025-07-25",
       status: "Pending",
     },
     {
@@ -47,7 +46,7 @@ function Orders() {
       customer: "Jenna Cruz",
       quantity: 1,
       price: "₱600",
-      address: "Quezon City",
+      address: "Astorga, Davao Del Sur",
       payment: "Credit Card",
       date: "2025-07-19",
       status: "Delivered",
@@ -58,7 +57,7 @@ function Orders() {
       customer: "Leo Tan",
       quantity: 1,
       price: "₱3,500",
-      address: "Cebu City",
+      address: "Davao City",
       payment: "Cash on Delivery",
       date: "2025-07-18",
       status: "Delivered",
@@ -66,7 +65,7 @@ function Orders() {
     {
       orderNo: "4",
       item: "Adjustable Wrench",
-      customer: "Mika Villanueva",
+      customer: "Shayee",
       quantity: 3,
       price: "₱750",
       address: "Davao City",
@@ -80,7 +79,7 @@ function Orders() {
       customer: "Ronald Cruz",
       quantity: 1,
       price: "₱6,000",
-      address: "Taguig",
+      address: "Bangkerohan, Davao City",
       payment: "Bank Transfer",
       date: "2025-07-17",
       status: "Delivered",
@@ -91,7 +90,7 @@ function Orders() {
       customer: "Sara Lim",
       quantity: 4,
       price: "₱150",
-      address: "Pasig",
+      address: "Matina, Davao City",
       payment: "Gcash",
       date: "2025-07-21",
       status: "Pending",
@@ -102,7 +101,7 @@ function Orders() {
       customer: "Benny Uy",
       quantity: 2,
       price: "₱950",
-      address: "Caloocan",
+      address: "Carson, Toril, Davao City",
       payment: "Credit Card",
       date: "2025-07-20",
       status: "Delivered",
@@ -113,7 +112,7 @@ function Orders() {
       customer: "Aira Santos",
       quantity: 1,
       price: "₱500",
-      address: "Pasay",
+      address: "Marapangi, Toril, Davao City",
       payment: "Gcash",
       date: "2025-07-19",
       status: "Cancelled",
@@ -124,7 +123,7 @@ function Orders() {
       customer: "Jake Fernandez",
       quantity: 1,
       price: "₱2,200",
-      address: "Manila",
+      address: "Bolton, Davao City",
       payment: "Cash on Delivery",
       date: "2025-07-22",
       status: "Pending",
@@ -135,17 +134,27 @@ function Orders() {
       customer: "Nina Gutierrez",
       quantity: 2,
       price: "₱3,800",
-      address: "Mandaluyong",
+      address: "Matina, Davao City",
       payment: "Credit Card",
       date: "2025-07-18",
       status: "Delivered",
     },
   ];
 
-  const filteredOrders =
-    selectedStatus === "All"
-      ? orders
-      : orders.filter((order) => order.status === selectedStatus);
+ const filteredOrders = orders.filter((order) => {
+    const matchStatus = selectedStatus === "All" || order.status === selectedStatus;
+    
+    const matchDate = selectedDate === "" || order.date === selectedDate;
+
+    const matchSearch =
+      searchQuery === "" ||
+      order.item.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.address.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchStatus && matchDate && matchSearch;
+  });
 
   const handleSearch = () => {
     console.log("Searching for:", searchQuery);
@@ -240,7 +249,7 @@ function Orders() {
       <main className="flex-1 bg-gray-500 text-black overflow-y-auto">
         {/* Header */}
         <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
-            <h1 className="text-lg">Orders</h1>
+            <h1 className="text-lg">Order History</h1>
             <div></div>
             <div className="flex items-center gap-2">
             <input
@@ -304,46 +313,56 @@ function Orders() {
                     className="absolute top-0 left-0 opacity-0 pointer-events-none"
                 />
                 </div>
-            </div> {/* ✅ <-- This was missing */}
+            </div> 
+            <div className="px-4 py-6">
+              <div className="overflow-x-auto rounded-lg shadow">
+                <div className="min-w-full">
+                  {/* Header */}
+                  <div className="grid grid-cols-9 bg-gray-900 text-white font-bold text-sm uppercase tracking-wide rounded-t-lg">
+                    <div className="p-3 text-center">Order No.</div>
+                    <div className="p-3 text-center">Item Name</div>
+                    <div className="p-3 text-center">Name of Customer</div>
+                    <div className="p-3 text-center">Quantity</div>
+                    <div className="p-3 text-center">Price</div>
+                    <div className="p-3 text-center">Address</div>
+                    <div className="p-3 text-center">Payment</div>
+                    <div className="p-3 text-center">Date</div>
+                    <div className="p-3 text-center">Status</div>
+                  </div>
 
-            <div className="px-4 py-2">
-              <div className="grid grid-cols-9 font-semibold bg-black text-white py-2 px-2 rounded text-center">
-                <div className="px-2">Order No.</div>
-                <div className="px-2">Item Name</div>
-                <div className="px-2">Name of Customer</div>
-                <div className="px-2">Quantity</div>
-                <div className="px-2">Price</div>
-                <div className="px-2">Address</div>
-                <div className="px-2">Payment</div>
-                <div className="px-2">Date</div>
-                <div className="px-2">Status</div>
-              </div>
-            {filteredOrders.map((order, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-9 py-2 px-2 border-b border-gray-300 bg-white text-black hover:bg-gray-800 hover:text-white transition text-center"
-              >
-                <div className="px-2 truncate">{order.orderNo}</div>
-                <div className="px-2 truncate">{order.item}</div>
-                <div className="px-2 truncate">{order.customer}</div>
-                <div className="px-2 truncate">{order.quantity}</div>
-                <div className="px-2 truncate">{order.price}</div>
-                <div className="px-2 truncate">{order.address}</div>
-                <div className="px-2 truncate">{order.payment}</div>
-                <div className="px-2 truncate">{order.date}</div>
-                <div
-                  className={`rounded px-2 py-1 w-fit mx-auto font-semibold
-                    ${order.status.toLowerCase() === "cancelled" ? "bg-red-500 text-white" : ""}
-                    ${order.status.toLowerCase() === "pending" ? "bg-yellow-400 text-black" : ""}
-                    ${order.status.toLowerCase() === "delivered" ? "bg-green-500 text-white" : ""}
-                    ${order.status.toLowerCase() === "shipped" ? "bg-blue-500 text-white" : ""}
-                  `}
-                >
-                  {order.status}
+                  {/* Data rows */}
+                  {filteredOrders.map((order, index) => (
+                    <div
+                      key={index}
+                      className={`grid grid-cols-9 items-center text-sm transition duration-200 ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-gray-800 hover:text-white`}
+                    >
+                      <div className="p-3 text-center">{order.orderNo}</div>
+                      <div className="p-3 text-center truncate">{order.item}</div>
+                      <div className="p-3 text-center truncate">{order.customer}</div>
+                      <div className="p-3 text-center">{order.quantity}</div>
+                      <div className="p-3 text-center">{order.price}</div>
+                      <div className="p-3 text-center truncate">{order.address}</div>
+                      <div className="p-3 text-center">{order.payment}</div>
+                      <div className="p-3 text-center">{order.date}</div>
+                      <div className="p-3 text-center">
+                        <span
+                          className={`px-3 py-1 rounded-full font-medium text-xs
+                            ${order.status.toLowerCase() === "cancelled" ? "bg-red-500 text-white" : ""}
+                            ${order.status.toLowerCase() === "pending" ? "bg-yellow-300 text-black" : ""}
+                            ${order.status.toLowerCase() === "delivered" ? "bg-green-500 text-white" : ""}
+                            ${order.status.toLowerCase() === "shipped" ? "bg-blue-500 text-white" : ""}
+                          `}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
         </main>
     </div>
   );
