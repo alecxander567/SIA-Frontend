@@ -5,6 +5,7 @@ import LandingPage from './Components/Landingpage';
 import Dashboard from './Components/Dashboard'; 
 import Inventory from './Components/Inventory'; 
 import Orders from './Components/Orders'; 
+import Notifications from './Components/Notifications'; 
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
     </Router>
   );

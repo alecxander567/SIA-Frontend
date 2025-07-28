@@ -1,0 +1,301 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"align",
+				"align-items"
+			],
+			[
+				"vio",
+				"darkviolet"
+			],
+			[
+				"get",
+				"getElementById"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Snippet: ",
+				"Snippet: html"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 130.0,
+		"history":
+		[
+			"$ git clone https://github.com/alecxander567/simple-website-chatbot.git"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/User/OneDrive/Documents/ALEC/Python/file.py",
+		"/C/Users/User/OneDrive/Documents/ALEC/file.py",
+		"/C/Users/User/OneDrive/Documents/ALEC/file",
+		"/C/Users/User/OneDrive/Documents/ALEC/IT WEEK PROJECT/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/IT WEEK PROJECT/reminder.js",
+		"/C/Users/User/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
+		"/C/Users/User/AppData/Roaming/Sublime Text 3/Packages/Package Control/Package Control.sublime-settings",
+		"/C/Users/User/AppData/Roaming/Sublime Text 3/Packages/User/Mariana.sublime-color-scheme",
+		"/C/Users/User/AppData/Roaming/Sublime Text 3/Packages/Color Scheme - Default/Mariana.sublime-color-scheme",
+		"/C/Users/User/AppData/Roaming/Sublime Text 3/Packages/User/Default Dark.sublime-theme",
+		"/C/Users/User/AppData/Roaming/Sublime Text 3/Packages/Theme - Default/Default Dark.sublime-theme",
+		"/C/Users/User/OneDrive/Documents/ALEC/WeatherApp/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/WeatherApp/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/WeatherApp/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/WeatherApp/lindex.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/IT WEEK PROJECT/todoPrio.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/IT WEEK PROJECT/page.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/IT WEEK PROJECT/todo.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/IT WEEK PROJECT/todo.css",
+		"/C/xampp/xampp/htdocs/index.php",
+		"/C/xampp/xampp/htdocs/Crud/logout.php",
+		"/C/xampp/xampp/htdocs/Crud/edit.php",
+		"/C/xampp/xampp/htdocs/Crud/index.php",
+		"/C/xampp/xampp/htdocs/Crud/landingpage.php",
+		"/C/xampp/xampp/htdocs/Crud/login.php",
+		"/C/xampp/xampp/htdocs/Crud/signup.php",
+		"/C/xampp/xampp/htdocs/Crud/welcome.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/sign.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/welcomepage.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/n-tech.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/edit.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/logout.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/index.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/home.php",
+		"/C/xampp/xampp/htdocs/Glenn_Crud/out.php",
+		"/C/Users/User/OneDrive/Documents/ALEC/Quiz App/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Website #3/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Website #3/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/tic tac toe/tictactoe.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/tic tac toe/tictactoe.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/tic tac toe/tictactoe.html",
+		"/C/xampp/htdocs/Activity05/index.css",
+		"/C/xampp/htdocs/Activity05/index.php",
+		"/C/Users/User/OneDrive/Documents/ALEC/Website #3/style.css",
+		"/C/xampp/htdocs/AssignmentPHP/index.php",
+		"/C/Users/User/OneDrive/Documents/ALEC/Stopwatch/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Stopwatch/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Stopwatch",
+		"/C/Users/User/OneDrive/Documents/ALEC/Music Player App/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Music Player App/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Solar System Project/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Solar System Project/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Racing Game/race.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Racing Game/race.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Racing Game",
+		"/C/Users/User/OneDrive/Documents/ALEC/Racing Game/index.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Racing Game/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Racing Game/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Quiz App/quiz.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Notes App/notes.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Notes App/notes.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/ToDo/ToDo.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/ToDo/ToDo.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Quiz App/quiz.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Calculator/calculator.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Calculator/calculator.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Website 1/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Website 1/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Website 1/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Car Website/index.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Car Website/index.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Car Website/index.html",
+		"/C/workspace/simple-website-chatbot/index.html",
+		"/C/workspace/simple-website-chatbot/style.css",
+		"/C/workspace/simple-website-chatbot/script2.js",
+		"/C/workspace/simple-website-chatbot/script.js",
+		"/C/Users/User/OneDrive/Desktop/Final-project-chatbot/Project-ChatBot/style.css",
+		"/C/Users/User/OneDrive/Desktop/Final-project-chatbot/Project-ChatBot/script2.js",
+		"/C/Users/User/OneDrive/Desktop/Final-project-chatbot/Project-ChatBot/script.js",
+		"/C/Users/User/OneDrive/Desktop/Final-project-chatbot/Project-ChatBot/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/New folder/sample.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/chatbot-project/chatbot.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/chatbot-project/chatbot.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/chatbot-project/chabto.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/chatbot-project/app.py",
+		"/C/Users/User/OneDrive/Documents/ALEC/chatbot-project/index,htmll",
+		"/C/Users/User/OneDrive/Documents/ALEC/project-hci/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/project-hci/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Chatbot-Final/chat.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Chatbot-Final/responses.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Chatbot-Final/chat.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Chatbot-Final/home.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Chatbot-Final/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Chabot-Final",
+		"/C/Users/User/OneDrive/Documents/ALEC/Espaldon_cc101Website/project/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Final-project-chatbot.zip",
+		"/C/Users/User/OneDrive/Documents/ALEC/Espaldon_cc101Website/project/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Espaldon_cc101Website/project/style .css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/script2.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/chatbot.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Sample/script.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Sample/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot.zip",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/script chat-bot.js",
+		"/C/Users/User/OneDrive/Documents/ALEC/Project-ChatBot/index.html.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Sublime Project/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Sublime Project/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/Hostit Free Website Template - Free-CSS.com/hostit-html/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/style.css",
+		"/C/Users/User/OneDrive/Documents/ALEC/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Sublime project/index.html",
+		"/C/Users/User/OneDrive/Documents/ALEC/Sublime project/style.css"
+	],
+	"find":
+	{
+		"height": 58.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 58.0
+	},
+	"input":
+	{
+		"height": 58.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"project": "Dashboard.sublime-project",
+	"replace":
+	{
+		"height": 112.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

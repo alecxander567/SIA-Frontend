@@ -1,4 +1,4 @@
-import { FaTachometerAlt, FaBox, FaClipboardList, FaChartBar, FaBell, FaSignOutAlt, FaSearch, FaChartLine, FaFire, FaCog,  FaBars, FaTimes } from "react-icons/fa";
+import { FaTachometerAlt, FaBox, FaClipboardList, FaChartBar, FaBell, FaSignOutAlt, FaSearch, FaChartLine, FaFire, FaCog,  FaBars, FaTimes, FaUser } from "react-icons/fa";
 import { Users, DollarSign, Package, AlertCircle } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line,XAxis,YAxis, ResponsiveContainer} from 'recharts';
 import { useNavigate } from "react-router-dom";
@@ -84,11 +84,11 @@ function Dashboard() {
                     <Link to="/orders" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaClipboardList /> Orders
                     </Link>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                    <FaChartBar /> Reports
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <Link to="/notifications" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaBell /> Notifications
+                    </Link>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                        <FaUser /> Profile Management
                     </a>
                     <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaCog /> Settings

@@ -1,4 +1,4 @@
-import { FaTachometerAlt, FaBox, FaClipboardList, FaChartBar, FaBell, FaSignOutAlt, FaSearch, FaCog,  FaBars, FaTimes, FaChevronLeft, FaChevronRight, FaPlus, FaEdit } from "react-icons/fa";
+import { FaTachometerAlt, FaBox, FaClipboardList, FaBell, FaSignOutAlt, FaSearch, FaCog,  FaBars, FaTimes, FaChevronLeft, FaChevronRight, FaPlus, FaEdit, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
@@ -259,11 +259,11 @@ function Inventory() {
                     <Link to="/orders" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaClipboardList /> Orders
                     </Link>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                    <FaChartBar /> Reports
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <Link to="/notifications" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaBell /> Notifications
+                    </Link>
+                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                        <FaUser /> Profile Management
                     </a>
                     <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaCog /> Settings

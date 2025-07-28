@@ -10,7 +10,9 @@ import {
   FaBars,
   FaTimes,
   FaCalendarAlt,
+  FaUser
 } from "react-icons/fa";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
@@ -215,17 +217,14 @@ function Orders() {
             >
               <FaClipboardList /> Orders
             </Link>
-            <a
-              href="#"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
-              <FaChartBar /> Reports
-            </a>
-            <a
-              href="#"
+            <Link
+              to="/notifications"
               className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
             >
               <FaBell /> Notifications
+            </Link>
+            <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+              <FaUser /> Profile Management
             </a>
             <a
               href="#"
