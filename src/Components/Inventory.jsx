@@ -46,11 +46,12 @@ function Inventory() {
     };
 
     const [formData, setFormData] = useState({
-        itemName: "",
-        price: "",
-        category: "",
-        quantity: "",
-        picture: null, 
+      itemName: "",
+      category: "",
+      unit: "",
+      price: "",
+      quantity: "",
+      image: null,
     });
 
     const fetchItems = async (category = "All Categories") => {
@@ -85,11 +86,12 @@ function Inventory() {
 
       const multipartFormData = new FormData();
         multipartFormData.append("itemName", formData.itemName);
-        multipartFormData.append("quantity", formData.quantity);
+        multipartFormData.append("quantity", parseInt(formData.quantity));
         multipartFormData.append("category", formData.category);
-        multipartFormData.append("price", formData.price);
-          if (formData.picture) {
-            multipartFormData.append("image", formData.picture); 
+        multipartFormData.append("unit", formData.unit);
+        multipartFormData.append("price", parseFloat(formData.price)); 
+        if (formData.image) {
+          multipartFormData.append("image", formData.image);
         }
 
       try {
@@ -117,8 +119,9 @@ function Inventory() {
         itemName: "",
         price: "",
         category: "",
+        unit: "",
         quantity: "",
-        picture: null,
+        image: null,
         id: null,
       });
 
@@ -157,7 +160,8 @@ function Inventory() {
       price: "",
       category: "",
       quantity: "",
-      picture: null,
+      unit: '', 
+      image: null,
       id: null,
     });
     setEditMode(false);
@@ -167,6 +171,11 @@ function Inventory() {
   const confirmDelete = (id) => {
     setConfirmDeleteId(id);
   };
+
+  const handleImageChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
+
 
   const handleDelete = async (id) => {
     try {
@@ -383,7 +392,7 @@ function Inventory() {
                       <h3 className="text-base font-semibold truncate">{item.itemName}</h3>
                       <p className="text-sm text-black-700">Price : ₱{item.price}</p>
                       <p className="text-sm text-black-500">Category: {item.category}</p>
-                      <p className="text-sm text-black-500">Quantity: {item.quantity}</p>
+                      <p className="text-sm text-black-500">Quantity: {item.quantity} {item.unit}</p>
                     </div>
 
                     <div className="mt-4 flex gap-2">
@@ -429,7 +438,7 @@ function Inventory() {
                       <h3 className="text-base font-semibold truncate">{item.itemName}</h3>
                       <p className="text-sm text-black-700">Price : ₱{item.price}</p>
                       <p className="text-sm text-black-500">Category: {item.category}</p>
-                      <p className="text-sm text-black-500">Quantity: {item.quantity}</p>
+                      <p className="text-sm text-black-500">Quantity: {item.quantity} {item.unit}</p>
                     </div>
 
                     <div className="mt-4 flex gap-2">
@@ -541,38 +550,100 @@ function Inventory() {
                           </>
                         )}
                       </h2>
-                      <form onSubmit={handleSubmit} className="space-y-4">
-                        <InputField label="Item Name" name="itemName" value={formData.itemName} onChange={handleChange} />
-                        <InputField label="Price" name="price" type="number" value={formData.price} onChange={handleChange} />
-                        <InputField label="Category" name="category" value={formData.category} onChange={handleChange} />
-                        <InputField label="Quantity" name="quantity" type="number" value={formData.quantity} onChange={handleChange} />
-
-                        <div className="mb-4">
-                          <label className="block font-semibold flex items-center gap-2">
-                            <ImageIcon className="w-5 h-5 text-black-500" />
-                            Picture
-                          </label>
-                          <input
-                            type="file"
-                            name="picture"
+                     <form onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-2 gap-4">
+                          {/* Item Name */}
+                          <InputField
+                            label="Item Name"
+                            name="itemName"
+                            value={formData.itemName}
                             onChange={handleChange}
-                            className="w-full text-sm text-gray-500 mt-1"
+                          />
+
+                          {/* Price */}
+                          <InputField
+                            label="Price"
+                            name="price"
+                            type="number"
+                            value={formData.price}
+                            onChange={handleChange}
+                          />
+
+                          {/* Category Dropdown */}
+                          <div className="w-full mb-3">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Category
+                            </label>
+                            <select
+                              name="category"
+                              value={formData.category}
+                              onChange={handleChange}
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            >
+                              <option value="">Select Category</option>
+                              <option value="tools">Tools</option>
+                              <option value="plumbing tools">Plumbing Tools</option>
+                              <option value="electronics">Electronics</option>
+                            </select>
+                          </div>
+
+                          {/* Unit Dropdown */}
+                          <div className="w-full mb-3">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Unit
+                            </label>
+                            <select
+                              name="unit"
+                              value={formData.unit}
+                              onChange={handleChange}
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            >
+                              <option value="">Select Unit</option>
+                              <option value="kilo">Kilo</option>
+                              <option value="box">Box</option>
+                              <option value="piece">Piece</option>
+                            </select>
+                          </div>
+
+                          {/* Quantity */}
+                          <InputField
+                            label="Quantity"
+                            name="quantity"
+                            type="number"
+                            value={formData.quantity}
+                            onChange={handleChange}
                           />
                         </div>
 
-                        <div className="flex justify-end gap-2">
+                        {/* Image Upload Field */}
+                        <div className="w-full mb-3">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Upload Image
+                          </label>
+                          <input
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+                        </div>
+
+
+                        {/* Buttons */}
+                        <div className="flex justify-end gap-2 mt-6">
                           <button
                             type="button"
                             onClick={() => setShowModal(false)}
-                            className="px-4 py-2 bg-gray-300 text-black rounded-[10px] hover:bg-gray-400"
+                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
                           >
                             Cancel
                           </button>
                           <button
                             type="submit"
-                            className="px-4 py-2 bg-black text-white rounded-[10px] hover:bg-gray-800 transition"
+                            className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900"
                           >
-                            {editMode ? 'Update' : 'Save'}
+                            {editMode ? "Update Item" : "Add Item"}
                           </button>
                         </div>
                       </form>

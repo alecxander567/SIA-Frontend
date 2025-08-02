@@ -9,8 +9,11 @@ function Register() {
         lastName: "",
         position: "",
         email: "",
-        password: ""
+        password: "",
+        sex: "",
+        contactNumber: ""
     });
+
     const [successMessage, setSuccessMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
@@ -129,6 +132,39 @@ function Register() {
                     </select>
                     </div>
                 </div>
+                 <div className="flex gap-4">
+                <div className="w-1/2">
+                    <label className="block text-sm font-medium mb-1 text-black">
+                    Sex
+                    </label>
+                    <select
+                    name="sex"
+                    value={formData.sex}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black"
+                    required
+                    >
+                    <option value="">Select sex</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div className="w-1/2">
+                    <label className="block text-sm font-medium mb-1 text-black">
+                    Contact Number
+                    </label>
+                    <input
+                    type="tel"
+                    name="contactNumber"
+                    value={formData.contactNumber}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black"
+                    placeholder="09xxxxxxxxx"
+                    required
+                    />
+                </div>
+                </div>
                 <div>
                     <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
                         <FaLock />
@@ -154,7 +190,7 @@ function Register() {
                         </button>
                     </div>
                 </div>
-
+               
                 <button
                     type="submit"
                     className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800 transition"
