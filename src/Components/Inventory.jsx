@@ -271,12 +271,9 @@ function Inventory() {
                     <Link to="/notifications" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                     <FaBell /> Notifications
                     </Link>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+                    <Link to="/profile" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
                         <FaUser /> Profile Management
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-                    <FaCog /> Settings
-                    </a>
+                    </Link>
                 </nav>
                 </div>
 
