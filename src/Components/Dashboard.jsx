@@ -3,17 +3,32 @@ import { Users, DollarSign, Package, AlertCircle } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line,XAxis,YAxis, ResponsiveContainer} from 'recharts';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 function Dashboard() {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const [data, setData] = useState([]);
 
-    const data = [
-        { name: 'Sold Items', value: 320 },
-        { name: 'Remaining Items', value: 80 },
-    ];
+    useEffect(() => {
+        axios
+            .get("https://eager-views-grin.loca.lt/sales-overview")
+            .then((res) => {
+            console.log("API Data:", res.data);
+
+            const sold = Number(res.data?.sold_items ?? 0);
+            const remaining = Number(res.data?.remaining_items ?? 0);
+
+            setData([
+                { name: "Sold Items", value: sold },
+                { name: "Remaining Items", value: remaining },
+            ]);
+            })
+            .catch((err) => {
+            console.error("Error fetching sales overview:", err);
+            });
+    }, []);
 
     const topItems = [
         { name: 'Item A', value: 90 },
@@ -152,75 +167,68 @@ function Dashboard() {
                     </div>
                 </div>
 
-
-                    <div className="flex flex-wrap gap-6 px-10 pb-10">
-                        <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg text-black">
-                            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                <FaChartLine className="text-gray-700" />
-                                Sales Overview
-                            </h2>
-                            <div className="flex justify-center">
-                            <PieChart width={300} height={250}>
+                <div className="flex flex-wrap gap-6 px-10 pb-10">
+                    <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg text-black">
+                        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                            <FaChartLine className="text-gray-700" />
+                            Sales Overview
+                        </h2>
+                        <div className="flex justify-center">
+                            {data.length > 0 ? (
+                                <PieChart width={300} height={250}>
                                 <defs>
-                                <linearGradient id="gradient-0" x1="0" y1="0" x2="1" y2="1">
+                                    <linearGradient id="gradient-0" x1="0" y1="0" x2="1" y2="1">
                                     <stop offset="0%" stopColor="#ff0000" />
                                     <stop offset="100%" stopColor="#ffa500" />
-                                </linearGradient>
-                                <linearGradient id="gradient-1" x1="0" y1="0" x2="1" y2="1">
+                                    </linearGradient>
+                                    <linearGradient id="gradient-1" x1="0" y1="0" x2="1" y2="1">
                                     <stop offset="0%" stopColor="#ff4500" />
                                     <stop offset="100%" stopColor="#ffd700" />
-                                </linearGradient>
-                                <linearGradient id="gradient-2" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stopColor="#e60000" />
-                                    <stop offset="100%" stopColor="#ffb347" />
-                                </linearGradient>
+                                    </linearGradient>
                                 </defs>
+
                                 <Pie
                                     data={data}
                                     cx="50%"
                                     cy="50%"
                                     outerRadius={80}
                                     dataKey="value"
-                                    label={({ name, percent, x, y }) => (
-                                        <text
-                                        x={x}
-                                        y={y}
-                                        fill="#000"
-                                        textAnchor="middle"
-                                        dominantBaseline="central"
-                                        fontSize={12}
-                                        >
-                                        {`${name}: ${(percent * 100).toFixed(0)}%`}
-                                        </text>
-                                    )}
+                                    label={({ name, percent }) =>
+                                    `${name}: ${(percent * 100).toFixed(0)}%`
+                                    }
                                     labelLine={false}
-                                    >
+                                >
                                     {data.map((entry, index) => (
-                                        <Cell
+                                    <Cell
                                         key={`cell-${index}`}
                                         fill={
-                                            entry.name === "Remaining Items"
+                                        entry.name === "Remaining Items"
                                             ? "#e0e0e0"
                                             : `url(#gradient-${index})`
                                         }
-                                        />
+                                    />
                                     ))}
                                 </Pie>
 
-                                    <Tooltip
+                                <Tooltip
                                     contentStyle={{
-                                        backgroundColor: "#fff",
-                                        border: "1px solid #ccc",
-                                        color: "#000"
+                                    backgroundColor: "#fff",
+                                    border: "1px solid #ccc",
+                                    color: "#000",
                                     }}
                                     itemStyle={{ color: "#000" }}
                                     labelStyle={{ color: "#000" }}
                                 />
                                 <Legend
                                     wrapperStyle={{ color: "#000" }}
-                                    formatter={(value) => <span style={{ color: "#000" }}>{value}</span>}
+                                    formatter={(value) => (
+                                    <span style={{ color: "#000" }}>{value}</span>
+                                    )}
                                 />
-                            </PieChart>
+                                </PieChart>
+                            ) : (
+                                <p>Loading sales data...</p>
+                            )}
                             </div>
                         </div>
 
