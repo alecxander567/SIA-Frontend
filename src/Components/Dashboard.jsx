@@ -10,10 +10,11 @@ function Dashboard() {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [data, setData] = useState([]);
+    const [topItems, setTopItems] = useState([]);
 
     useEffect(() => {
         axios
-            .get("https://eager-views-grin.loca.lt/sales-overview")
+            .get("https://slow-needles-repair.loca.lt/Sales-Overview")
             .then((res) => {
             console.log("API Data:", res.data);
 
@@ -30,13 +31,22 @@ function Dashboard() {
             });
     }, []);
 
-    const topItems = [
-        { name: 'Item A', value: 90 },
-        { name: 'Item B', value: 85 },
-        { name: 'Item C', value: 80 },
-        { name: 'Item D', value: 75 },
-        { name: 'Item E', value: 70 },
-    ];
+    useEffect(() => {
+        const fetchTopItems = async () => {
+        try {
+            const res = await axios.get("https://slow-needles-repair.loca.lt/");
+            const formatted = res.data.map((item) => ({
+            name: item.product_name,
+            value: parseFloat(item.percentage), 
+            }));
+            setTopItems(formatted);
+        } catch (error) {
+            console.error("Error fetching top sold items:", error);
+        }
+        };
+
+        fetchTopItems();
+    }, []);
 
     const lineData = [
         { month: 'Jan', profit: 12000, expense: 8000 },
@@ -232,29 +242,33 @@ function Dashboard() {
                             </div>
                         </div>
 
-                        {/* Top 10 Sold Items */}
+                        {/* Top 5 Sold Items */}
                         <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                             <h2 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
                                 <FaFire />
                                 Top 5 Sold Items
                             </h2>
-                        {topItems.map((item, index) => (
-                            <div key={index} className="mb-4">
-                            <div className="flex justify-between mb-1">
-                                <span className="text-sm font-medium text-black">{item.name}</span>
-                                <span className="text-sm text-gray-500">{item.value}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                <div
-                                className="h-2.5 rounded-full"
-                                style={{
-                                    width: `${item.value}%`,
-                                    backgroundImage: 'linear-gradient(to right, #ff0000, #ffa500)',
-                                }}
-                                ></div>
-                            </div>
-                            </div>
-                        ))}
+                            {topItems.length > 0 ? (
+                                topItems.map((item, index) => (
+                                <div key={index} className="mb-4">
+                                    <div className="flex justify-between mb-1">
+                                    <span className="text-sm font-medium text-black">{item.name}</span>
+                                    <span className="text-sm text-gray-500">{item.value}%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div
+                                        className="h-2.5 rounded-full"
+                                        style={{
+                                        width: `${item.value}%`,
+                                        backgroundImage: "linear-gradient(to right, #ff0000, #ffa500)",
+                                        }}
+                                    ></div>
+                                    </div>
+                                </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-500">Loading top items...</p>
+                            )}
                         </div>
                     </div>
 
