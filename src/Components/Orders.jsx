@@ -15,7 +15,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Orders() {
@@ -24,138 +24,50 @@ function Orders() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState(""); 
+  const [orders, setOrders] = useState([]);
 
   const formattedDate = selectedDate
   ? new Date(selectedDate).toLocaleDateString("en-US")
   : "All Dates";
+  
+   // Fetch orders from API
+  useEffect(() => {
+    const fetchOrders = () => {
+      axios.get("http://localhost:8080/api/orders")
+        .then(res => {
+          const transformed = res.data.map(order => ({
+            orderNo: order.orderId,
+            item: order.item?.itemName || "N/A",
+            customer: order.customer_name,
+            quantity: order.quantity,
+            price: `₱${order.total_price}`,
+            address: order.address,
+            payment: order.payment_type,
+            date: order.order_date,
+            status: order.status || "Pending",
+          }));
+          setOrders(transformed);
+        })
+        .catch(err => console.error("Error fetching orders:", err));
+    };
 
+    fetchOrders(); 
+    const interval = setInterval(fetchOrders, 5000); 
 
-  const orders = [
-    {
-      orderNo: "1",
-      item: "Hammer",
-      customer: "Alex Reyes",
-      quantity: 2,
-      price: "₱350",
-      address: "Toril, Davao City",
-      payment: "Gcash",
-      date: "2025-07-25",
-      status: "Pending",
-    },
-    {
-      orderNo: "2",
-      item: "Screwdriver Set",
-      customer: "Jenna Cruz",
-      quantity: 1,
-      price: "₱600",
-      address: "Astorga, Davao Del Sur",
-      payment: "Credit Card",
-      date: "2025-07-19",
-      status: "Delivered",
-    },
-    {
-      orderNo: "3",
-      item: "Cordless Drill",
-      customer: "Leo Tan",
-      quantity: 1,
-      price: "₱3,500",
-      address: "Davao City",
-      payment: "Cash on Delivery",
-      date: "2025-07-18",
-      status: "Delivered",
-    },
-    {
-      orderNo: "4",
-      item: "Adjustable Wrench",
-      customer: "Shayee",
-      quantity: 3,
-      price: "₱750",
-      address: "Davao City",
-      payment: "PayPal",
-      date: "2025-07-18",
-      status: "Cancelled",
-    },
-    {
-      orderNo: "5",
-      item: "Circular Saw",
-      customer: "Ronald Cruz",
-      quantity: 1,
-      price: "₱6,000",
-      address: "Bangkerohan, Davao City",
-      payment: "Bank Transfer",
-      date: "2025-07-17",
-      status: "Delivered",
-    },
-    {
-      orderNo: "6",
-      item: "Tape Measure",
-      customer: "Sara Lim",
-      quantity: 4,
-      price: "₱150",
-      address: "Matina, Davao City",
-      payment: "Gcash",
-      date: "2025-07-21",
-      status: "Pending",
-    },
-    {
-      orderNo: "7",
-      item: "Chisel Set",
-      customer: "Benny Uy",
-      quantity: 2,
-      price: "₱950",
-      address: "Carson, Toril, Davao City",
-      payment: "Credit Card",
-      date: "2025-07-20",
-      status: "Delivered",
-    },
-    {
-      orderNo: "8",
-      item: "Handsaw",
-      customer: "Aira Santos",
-      quantity: 1,
-      price: "₱500",
-      address: "Marapangi, Toril, Davao City",
-      payment: "Gcash",
-      date: "2025-07-19",
-      status: "Cancelled",
-    },
-    {
-      orderNo: "9",
-      item: "Ladder (6ft)",
-      customer: "Jake Fernandez",
-      quantity: 1,
-      price: "₱2,200",
-      address: "Bolton, Davao City",
-      payment: "Cash on Delivery",
-      date: "2025-07-22",
-      status: "Pending",
-    },
-    {
-      orderNo: "10",
-      item: "Electric Sander",
-      customer: "Nina Gutierrez",
-      quantity: 2,
-      price: "₱3,800",
-      address: "Matina, Davao City",
-      payment: "Credit Card",
-      date: "2025-07-18",
-      status: "Delivered",
-    },
-  ];
+    return () => clearInterval(interval); 
+  }, []);
 
- const filteredOrders = orders.filter((order) => {
-    const matchStatus = selectedStatus === "All" || order.status === selectedStatus;
-    
-    const matchDate = selectedDate === "" || order.date === selectedDate;
-
-    const matchSearch =
+ const filteredOrders = orders.filter(order => {
+    const matchesStatus =
+      selectedStatus === "All" || order.status === selectedStatus;
+    const matchesSearch =
       searchQuery === "" ||
       order.item.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.address.toLowerCase().includes(searchQuery.toLowerCase());
+      order.customer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDate =
+      selectedDate === "" || order.date === selectedDate;
 
-    return matchStatus && matchDate && matchSearch;
+    return matchesStatus && matchesSearch && matchesDate;
   });
 
   const handleSearch = () => {
@@ -266,7 +178,7 @@ function Orders() {
             </div>
         </header>
 
-        {/* Filter Dropdown and Date Picker */}
+          {/* Filter Dropdown and Date Picker */}
             <div className="flex justify-end px-10 py-4 gap-4">
                 {/* Filter Dropdown */}
                 <div className="relative inline-block">

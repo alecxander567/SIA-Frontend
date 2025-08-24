@@ -14,7 +14,7 @@ function Dashboard() {
 
     useEffect(() => {
         axios
-            .get("https://slow-needles-repair.loca.lt/Sales-Overview")
+            .get("https://kind-beers-rescue.loca.lt/Sales-Overview")
             .then((res) => {
             console.log("API Data:", res.data);
 
@@ -33,20 +33,21 @@ function Dashboard() {
 
     useEffect(() => {
         const fetchTopItems = async () => {
-        try {
-            const res = await axios.get("https://slow-needles-repair.loca.lt/");
-            const formatted = res.data.map((item) => ({
-            name: item.product_name,
-            value: parseFloat(item.percentage), 
+            try {
+            const res = await axios.get("https://kind-beers-rescue.loca.lt/");
+            const formatted = res.data.map((entry) => ({
+                name: entry.item.itemName,  // ✅ correct path
+                value: parseFloat(entry.item.percentage), // ✅ convert string to number
             }));
             setTopItems(formatted);
-        } catch (error) {
+            } catch (error) {
             console.error("Error fetching top sold items:", error);
-        }
+            }
         };
 
         fetchTopItems();
     }, []);
+
 
     const lineData = [
         { month: 'Jan', profit: 12000, expense: 8000 },
