@@ -57,7 +57,7 @@ function Login() {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black placeholder-gray-700 focus:outline-none focus:ring focus:ring-blue-300"
-                  placeholder="example@email.com"
+                  placeholder="Enter your email..."
                 />
               </div>
 
@@ -73,7 +73,7 @@ function Login() {
                     value={formData.password}
                     onChange={handleChange}
                     className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black placeholder-gray-700 focus:outline-none focus:ring focus:ring-blue-300"
-                    placeholder="8-16 characters"
+                    placeholder="Enter your password..."
                   />
                   <button
                     type="button"

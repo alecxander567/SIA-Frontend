@@ -15,7 +15,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 function Orders() {
@@ -25,37 +25,53 @@ function Orders() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState(""); 
   const [orders, setOrders] = useState([]);
+  const [orderCount, setOrderCount] = useState(0);
+  const today = new Date().toISOString().split("T")[0]; 
+  const latestOrderIdRef = useRef(0);
 
   const formattedDate = selectedDate
   ? new Date(selectedDate).toLocaleDateString("en-US")
   : "All Dates";
   
-   // Fetch orders from API
   useEffect(() => {
-    const fetchOrders = () => {
-      axios.get("http://localhost:8080/api/orders")
-        .then(res => {
-          const transformed = res.data.map(order => ({
-            orderNo: order.orderId,
-            item: order.item?.itemName || "N/A",
-            customer: order.customer_name,
-            quantity: order.quantity,
-            price: `₱${order.total_price}`,
-            address: order.address,
-            payment: order.payment_type,
-            date: order.order_date,
-            status: order.status || "Pending",
-          }));
-          setOrders(transformed);
-        })
-        .catch(err => console.error("Error fetching orders:", err));
+    const fetchOrders = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/orders");
+
+        const filtered = res.data.filter(order => {
+          const orderDate = order.order_date.split("T")[0];
+          return selectedDate ? orderDate === selectedDate : orderDate === today;
+        });
+
+        const transformed = filtered.map(order => ({
+          orderNo: order.orderId,
+          item: order.item?.itemName || "N/A",
+          customer: order.customer_name,
+          quantity: order.quantity,
+          price: `₱${order.total_price}`,
+          address: order.address,
+          payment: order.payment_type,
+          date: order.order_date,
+          status: order.status || "Pending",
+        }));
+
+        const newOrders = transformed.filter(order => order.orderNo > latestOrderIdRef.current);
+        if (newOrders.length > 0) {
+          setOrderCount(prev => prev + newOrders.length);
+          latestOrderIdRef.current = Math.max(...transformed.map(o => o.orderNo));
+        }
+
+        setOrders(transformed);
+
+      } catch (err) {
+        console.error(err);
+      }
     };
 
-    fetchOrders(); 
-    const interval = setInterval(fetchOrders, 5000); 
-
-    return () => clearInterval(interval); 
-  }, []);
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 5000);
+    return () => clearInterval(interval);
+  }, [selectedDate]); 
 
  const filteredOrders = orders.filter(order => {
     const matchesStatus =
@@ -127,7 +143,7 @@ function Orders() {
               to="/orders"
               className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
             >
-              <FaClipboardList /> Orders
+              <FaClipboardList /> Orders ({orderCount})
             </Link>
             <Link
               to="/notifications"

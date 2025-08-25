@@ -11,6 +11,10 @@ function Dashboard() {
     const [isOpen, setIsOpen] = useState(false);
     const [data, setData] = useState([]);
     const [topItems, setTopItems] = useState([]);
+    const [totalOrders, setTotalOrders] = useState(0);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const [outOfStock, setOutOfStock] = useState(0);
 
     useEffect(() => {
         axios
@@ -36,8 +40,8 @@ function Dashboard() {
             try {
             const res = await axios.get("https://kind-beers-rescue.loca.lt/");
             const formatted = res.data.map((entry) => ({
-                name: entry.item.itemName,  // ✅ correct path
-                value: parseFloat(entry.item.percentage), // ✅ convert string to number
+                name: entry.item.itemName,  
+                value: parseFloat(entry.item.percentage), 
             }));
             setTopItems(formatted);
             } catch (error) {
@@ -48,6 +52,73 @@ function Dashboard() {
         fetchTopItems();
     }, []);
 
+    useEffect(() => {
+        const fetchTotalOrders = async () => {
+            try {
+            const res = await axios.get("http://localhost:8080/api/orders");
+            setTotalOrders(res.data.length);
+            } catch (err) {
+            console.error("Error fetching total orders:", err);
+            }
+        };
+
+        fetchTotalOrders();
+
+        const interval = setInterval(fetchTotalOrders, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+     useEffect(() => {
+        const fetchRevenue = async () => {
+            try {
+                const res = await axios.get("http://localhost:8080/api/orders");
+
+                const revenue = res.data.reduce((sum, order) => sum + order.total_price, 0);
+                setTotalRevenue(revenue);
+            } catch (err) {
+                console.error("Error fetching total revenue:", err);
+            }
+        };
+
+        fetchRevenue();
+
+        const interval = setInterval(fetchRevenue, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+            const res = await axios.get("http://localhost:8080/api/items"); 
+            setTotalProducts(res.data.length); 
+            } catch (err) {
+            console.error("Error fetching products:", err);
+            }
+        };
+
+        fetchProducts();
+
+        const interval = setInterval(fetchProducts, 5000); 
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const fetchOutOfStock = async () => {
+            try {
+            const res = await axios.get("http://localhost:8080/api/items");
+            const outOfStockCount = res.data.filter(item => item.quantity === 0).length;
+            setOutOfStock(outOfStockCount);
+            } catch (err) {
+            console.error("Error fetching out-of-stock items:", err);
+            }
+        };
+
+        fetchOutOfStock();
+
+        const interval = setInterval(fetchOutOfStock, 5000); 
+        return () => clearInterval(interval);
+    }, []);
 
     const lineData = [
         { month: 'Jan', profit: 12000, expense: 8000 },
@@ -148,31 +219,31 @@ function Dashboard() {
                 <div className="p-10">
                     <div className="flex flex-wrap justify-center gap-6">
                         <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-                        <Users className="text-blue-500" size={36} />
+                        <Package className="text-blue-500" size={36} />
                         <div className="flex flex-col justify-between h-full">
-                            <p className="text-sm text-black font-semibold">Total Customers</p>
-                            <p className="text-2xl font-bold text-black">1,250</p>
+                            <p className="text-sm text-black font-semibold">Total Orders</p>
+                            <p className="text-2xl font-bold text-black">{totalOrders}</p>
                         </div>
                         </div>
                         <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
                         <DollarSign className="text-green-500" size={36} />
                         <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Total Revenue</p>
-                            <p className="text-2xl font-bold text-black">₱254,000</p>
+                            <p className="text-2xl font-bold text-black">₱{totalRevenue.toLocaleString()}</p>
                         </div>
                         </div>
                         <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
                         <Package className="text-purple-500" size={36} />
                         <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Total Products</p>
-                            <p className="text-2xl font-bold text-black">320</p>
+                            <p className="text-2xl font-bold text-black">{totalProducts}</p>
                         </div>
                         </div>
                         <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
                         <AlertCircle className="text-red-500" size={36} />
                         <div className="flex flex-col justify-between h-full">
                             <p className="text-sm text-black font-semibold">Out of Stock</p>
-                            <p className="text-2xl font-bold text-black">8</p>
+                            <p className="text-2xl font-bold text-black">{outOfStock}</p>
                         </div>
                         </div>
                     </div>

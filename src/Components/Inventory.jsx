@@ -56,10 +56,10 @@ function Inventory() {
 
     const fetchItems = async (category = "All Categories") => {
       try {
-        const url =
-          category === "All Categories"
-            ? "http://localhost:8080/api/items"
-            : `http://localhost:8080/api/items?category=${encodeURIComponent(category)}`;
+        let url = "http://localhost:8080/api/items";
+        if (category && category !== "All Categories") {
+          url += `?category=${encodeURIComponent(category.toLowerCase())}`; 
+        }
 
         const response = await axios.get(url);
         setItems(response.data);
@@ -176,10 +176,9 @@ function Inventory() {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
-
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/items/${id}`);
+      await axios.delete(`http://localhost:8080/api/items/${Number(id)}`);
       setItems((prevItems) => prevItems.filter((item) => item.id !== id));
       setConfirmDeleteId(null);
 
@@ -326,7 +325,7 @@ function Inventory() {
               ref={scrollRef}
               className="flex gap-4 text-sm font-semibold whitespace-nowrap overflow-x-auto scroll-smooth scrollbar-hide mx-10"
             >
-              {["All Categories", "Tools", "Electronics Supplies", "Plumbing Supplies"].map((category) => (
+              {["All Categories", "Tools", "Electronics", "Plumbing Tools"].map((category) => (
                 <div
                   key={category}
                   className={`cursor-pointer px-4 py-2 rounded-full transition ${
