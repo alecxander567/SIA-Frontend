@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
 /* index.css or global.css */
-
-
 html, body, #root {
   margin: 0;
   padding: 0;
