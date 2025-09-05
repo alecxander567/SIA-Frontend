@@ -43,7 +43,7 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://kind-beers-rescue.loca.lt/Sales-Overview")
+      .get("https://mean-pears-brake.loca.lt/Sales-Overview")
       .then((res) => {
         console.log("API Data:", res.data);
 
@@ -63,7 +63,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://kind-beers-rescue.loca.lt/");
+        const res = await axios.get("https://mean-pears-brake.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -335,7 +335,7 @@ function Dashboard() {
                       <Cell
                         key={`cell-${index}`}
                         fill={
-                          entry.name === "Remaining Items"
+                          entry.name === "Total Sold Items"
                             ? "#e0e0e0"
                             : `url(#gradient-${index})`
                         }
@@ -353,9 +353,41 @@ function Dashboard() {
                     labelStyle={{ color: "#000" }}
                   />
                   <Legend
-                    wrapperStyle={{ color: "#000" }}
-                    formatter={(value) => (
-                      <span style={{ color: "#000" }}>{value}</span>
+                    content={({ payload }) => (
+                      <ul
+                        style={{
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          display: "flex",
+                          gap: "20px",
+                        }}
+                      >
+                        {payload.map((entry, index) => {
+                          const fill =
+                            entry.value === "Sold Items"
+                              ? "#e0e0e0"
+                              : `url(#gradient-0)`; 
+
+                          return (
+                            <li
+                              key={`legend-${index}`}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              <svg width="14" height="14">
+                                <rect width="14" height="14" fill={fill} />
+                              </svg>
+                              <span style={{ color: "#000" }}>
+                                {entry.value}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     )}
                   />
                 </PieChart>
