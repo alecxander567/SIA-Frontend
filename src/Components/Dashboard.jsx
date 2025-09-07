@@ -343,6 +343,7 @@ function Dashboard() {
                         </linearGradient>
                       </defs>
 
+<<<<<<< HEAD
                       <Pie
                         data={data}
                         cx="50%"
@@ -351,6 +352,26 @@ function Dashboard() {
                         dataKey="value"
                         label={({ name, percent }) =>
                           `${name}: ${(percent * 100).toFixed(0)}%`
+=======
+                  <Pie
+                    data={data}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="value"
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                    labelLine={false}
+                  >
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          entry.name === "Total Sold Items"
+                            ? "#e0e0e0"
+                            : `url(#gradient-${index})`
+>>>>>>> fd4032f62b78578c60728169ddcaed1f8bbe39ea
                         }
                         labelLine={false}
                       >
@@ -366,6 +387,7 @@ function Dashboard() {
                         ))}
                       </Pie>
 
+<<<<<<< HEAD
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "#fff",
@@ -456,6 +478,56 @@ function Dashboard() {
                     </div>
                   ))}
                 </div>
+=======
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#fff",
+                      border: "1px solid #ccc",
+                      color: "#000",
+                    }}
+                    itemStyle={{ color: "#000" }}
+                    labelStyle={{ color: "#000" }}
+                  />
+                  <Legend
+                    content={({ payload }) => (
+                      <ul
+                        style={{
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          display: "flex",
+                          gap: "20px",
+                        }}
+                      >
+                        {payload.map((entry, index) => {
+                          const fill =
+                            entry.value === "Sold Items"
+                              ? "#e0e0e0"
+                              : `url(#gradient-0)`; 
+
+                          return (
+                            <li
+                              key={`legend-${index}`}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              <svg width="14" height="14">
+                                <rect width="14" height="14" fill={fill} />
+                              </svg>
+                              <span style={{ color: "#000" }}>
+                                {entry.value}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  />
+                </PieChart>
+>>>>>>> fd4032f62b78578c60728169ddcaed1f8bbe39ea
               ) : (
                 <p className="text-gray-500">Loading top items...</p>
               )}
