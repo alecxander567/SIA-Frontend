@@ -43,7 +43,7 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://kind-beers-rescue.loca.lt/Sales-Overview")
+      .get("https://mean-pears-brake.loca.lt/Sales-Overview")
       .then((res) => {
         console.log("API Data:", res.data);
 
@@ -63,7 +63,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://kind-beers-rescue.loca.lt/");
+        const res = await axios.get("https://mean-pears-brake.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -245,35 +245,38 @@ function Dashboard() {
         </div>
       </aside>
 
-      <main className="flex-1 bg-gray-500 text-black overflow-y-auto">
-        <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
-          <h1 class="text-lg">Dashboard</h1>
-          <div></div>
+      <main className="flex-1 bg-gray-100 text-black overflow-y-auto md:ml-0">
+        <header className="h-16 bg-black text-white px-4 md:px-10 flex items-center justify-between">
+          <h1 className="text-lg font-semibold">Dashboard</h1>
           <div className="flex items-center gap-2">
             <input
               type="text"
               placeholder="Search..."
-              className="w-64 bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-32 sm:w-48 md:w-64 bg-gray-800 text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button className="bg-white text-black p-2 px-4 rounded-md hover:bg-gray-200">
+            <button className="bg-white text-black p-2 px-3 md:px-4 rounded-md hover:bg-gray-200">
               <FaSearch />
             </button>
           </div>
         </header>
 
-        <div className="p-10">
-          <div className="flex flex-wrap justify-center gap-6">
-            <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-              <Package className="text-blue-500" size={36} />
-              <div className="flex flex-col justify-between h-full">
-                <p className="text-sm text-black font-semibold">Total Orders</p>
+        {/* Dashboard Stats Cards */}
+        <div className="p-4 md:p-6 lg:p-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
+              <Package className="text-blue-500 flex-shrink-0" size={36} />
+              <div className="flex flex-col justify-between h-full min-w-0">
+                <p className="text-sm text-gray-600 font-semibold">
+                  Total Orders
+                </p>
                 <p className="text-2xl font-bold text-black">{totalOrders}</p>
               </div>
             </div>
-            <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-              <DollarSign className="text-green-500" size={36} />
-              <div className="flex flex-col justify-between h-full">
-                <p className="text-sm text-black font-semibold">
+
+            <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
+              <DollarSign className="text-green-500 flex-shrink-0" size={36} />
+              <div className="flex flex-col justify-between h-full min-w-0">
+                <p className="text-sm text-gray-600 font-semibold">
                   Total Revenue
                 </p>
                 <p className="text-2xl font-bold text-black">
@@ -281,141 +284,212 @@ function Dashboard() {
                 </p>
               </div>
             </div>
-            <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-              <Package className="text-purple-500" size={36} />
-              <div className="flex flex-col justify-between h-full">
-                <p className="text-sm text-black font-semibold">
+
+            <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
+              <Package className="text-purple-500 flex-shrink-0" size={36} />
+              <div className="flex flex-col justify-between h-full min-w-0">
+                <p className="text-sm text-gray-600 font-semibold">
                   Total Products
                 </p>
                 <p className="text-2xl font-bold text-black">{totalProducts}</p>
               </div>
             </div>
-            <div className="w-full sm:w-52 h-20 bg-white rounded-lg shadow p-4 flex items-center gap-4">
-              <AlertCircle className="text-red-500" size={36} />
-              <div className="flex flex-col justify-between h-full">
-                <p className="text-sm text-black font-semibold">Out of Stock</p>
+
+            <div className="bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
+              <AlertCircle className="text-red-500 flex-shrink-0" size={36} />
+              <div className="flex flex-col justify-between h-full min-w-0">
+                <p className="text-sm text-gray-600 font-semibold">
+                  Out of Stock
+                </p>
                 <p className="text-2xl font-bold text-black">{outOfStock}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-6 px-10 pb-10">
-          <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg text-black">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <FaChartLine className="text-gray-700" />
-              Sales Overview
-            </h2>
-            <div className="flex justify-center">
-              {data.length > 0 ? (
-                <PieChart width={300} height={250}>
-                  <defs>
-                    <linearGradient id="gradient-0" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#ff0000" />
-                      <stop offset="100%" stopColor="#ffa500" />
-                    </linearGradient>
-                    <linearGradient id="gradient-1" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#ff4500" />
-                      <stop offset="100%" stopColor="#ffd700" />
-                    </linearGradient>
-                  </defs>
+        {/* Charts Section */}
+        <div className="px-4 md:px-6 lg:px-10 pb-6 lg:pb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Sales Overview Pie Chart */}
+            <div className="bg-white p-6 rounded-xl shadow-lg text-black">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <FaChartLine className="text-gray-700" />
+                Sales Overview
+              </h2>
+              <div className="flex justify-center">
+                {data.length > 0 ? (
+                  <div className="w-full max-w-sm">
+                    <PieChart width="100%" height={250}>
+                      <defs>
+                        <linearGradient
+                          id="gradient-0"
+                          x1="0"
+                          y1="0"
+                          x2="1"
+                          y2="1"
+                        >
+                          <stop offset="0%" stopColor="#ff0000" />
+                          <stop offset="100%" stopColor="#ffa500" />
+                        </linearGradient>
+                        <linearGradient
+                          id="gradient-1"
+                          x1="0"
+                          y1="0"
+                          x2="1"
+                          y2="1"
+                        >
+                          <stop offset="0%" stopColor="#ff4500" />
+                          <stop offset="100%" stopColor="#ffd700" />
+                        </linearGradient>
+                      </defs>
 
-                  <Pie
-                    data={data}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    dataKey="value"
-                    label={({ name, percent }) =>
-                      `${name}: ${(percent * 100).toFixed(0)}%`
-                    }
-                    labelLine={false}
-                  >
-                    {data.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={
-                          entry.name === "Remaining Items"
-                            ? "#e0e0e0"
-                            : `url(#gradient-${index})`
+                      <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                        label={({ name, percent }) =>
+                          `${name}: ${(percent * 100).toFixed(0)}%`
                         }
-                      />
-                    ))}
-                  </Pie>
+                        labelLine={false}
+                      >
+                        {data.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={
+                              entry.name === "Total Sold Items"
+                                ? "#e0e0e0"
+                                : `url(#gradient-${index})`
+                            }
+                          />
+                        ))}
+                      </Pie>
 
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#fff",
-                      border: "1px solid #ccc",
-                      color: "#000",
-                    }}
-                    itemStyle={{ color: "#000" }}
-                    labelStyle={{ color: "#000" }}
-                  />
-                  <Legend
-                    wrapperStyle={{ color: "#000" }}
-                    formatter={(value) => (
-                      <span style={{ color: "#000" }}>{value}</span>
-                    )}
-                  />
-                </PieChart>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#fff",
+                          border: "1px solid #ccc",
+                          color: "#000",
+                        }}
+                        itemStyle={{ color: "#000" }}
+                        labelStyle={{ color: "#000" }}
+                      />
+                      <Legend
+                        content={({ payload }) => (
+                          <ul
+                            style={{
+                              listStyle: "none",
+                              padding: 0,
+                              margin: 0,
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "10px",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {payload.map((entry, index) => {
+                              const fill =
+                                entry.value === "Sold Items"
+                                  ? "#e0e0e0"
+                                  : `url(#gradient-0)`;
+
+                              return (
+                                <li
+                                  key={`legend-${index}`}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                  }}
+                                >
+                                  <svg width="14" height="14">
+                                    <rect width="14" height="14" fill={fill} />
+                                  </svg>
+                                  <span
+                                    style={{ color: "#000", fontSize: "12px" }}
+                                  >
+                                    {entry.value}
+                                  </span>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        )}
+                      />
+                    </PieChart>
+                  </div>
+                ) : (
+                  <p>Loading sales data...</p>
+                )}
+              </div>
+            </div>
+
+            {/* Top 5 Sold Items */}
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h2 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                <FaFire className="text-orange-500" />
+                Top 5 Sold Items
+              </h2>
+              {topItems.length > 0 ? (
+                <div className="space-y-4">
+                  {topItems.map((item, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-black truncate pr-2">
+                          {item.name}
+                        </span>
+                        <span className="text-sm text-gray-500 flex-shrink-0">
+                          {item.value}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="h-2.5 rounded-full transition-all duration-300"
+                          style={{
+                            width: `${item.value}%`,
+                            backgroundImage:
+                              "linear-gradient(to right, #ff0000, #ffa500)",
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <p>Loading sales data...</p>
+                <p className="text-gray-500">Loading top items...</p>
               )}
             </div>
           </div>
-
-          {/* Top 5 Sold Items */}
-          <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold text-black mb-4 flex items-center gap-2">
-              <FaFire />
-              Top 5 Sold Items
-            </h2>
-            {topItems.length > 0 ? (
-              topItems.map((item, index) => (
-                <div key={index} className="mb-4">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm font-medium text-black">
-                      {item.name}
-                    </span>
-                    <span className="text-sm text-gray-500">{item.value}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className="h-2.5 rounded-full"
-                      style={{
-                        width: `${item.value}%`,
-                        backgroundImage:
-                          "linear-gradient(to right, #ff0000, #ffa500)",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500">Loading top items...</p>
-            )}
-          </div>
         </div>
 
-        <div className="w-full px-10 pb-10">
+        {/* Expense vs Profit Chart */}
+        <div className="px-4 md:px-6 lg:px-10 pb-6 lg:pb-10">
           <div className="bg-white p-6 rounded-xl shadow-lg text-black">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <FaChartLine />
+              <FaChartLine className="text-blue-600" />
               Expense vs Profit
             </h2>
 
             {/* Chart container with gradient background */}
-            <div className="w-full h-64 bg-gradient-to-r from-green-100 via-white to-red-100 rounded-md">
+            <div className="w-full h-64 md:h-80 bg-gradient-to-r from-green-100 via-white to-red-100 rounded-md p-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={lineData}>
-                  <XAxis dataKey="month" stroke="#000" />
-                  <YAxis stroke="#000" />
+                  <XAxis
+                    dataKey="month"
+                    stroke="#000"
+                    fontSize={12}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis stroke="#000" fontSize={12} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: "#fff",
                       border: "1px solid #ccc",
                       color: "#000",
+                      borderRadius: "8px",
                     }}
                     itemStyle={{ color: "#000" }}
                     labelStyle={{ color: "#000" }}
@@ -425,15 +499,17 @@ function Dashboard() {
                     type="monotone"
                     dataKey="profit"
                     stroke="#28a745"
-                    strokeWidth={2}
-                    dot={{ fill: "#28a745" }}
+                    strokeWidth={3}
+                    dot={{ fill: "#28a745", strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: "#28a745", strokeWidth: 2 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="expense"
                     stroke="#dc3545"
-                    strokeWidth={2}
-                    dot={{ fill: "#dc3545" }}
+                    strokeWidth={3}
+                    dot={{ fill: "#dc3545", strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: "#dc3545", strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>

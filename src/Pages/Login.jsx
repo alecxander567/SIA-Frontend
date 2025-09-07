@@ -30,8 +30,19 @@ function Login() {
         "http://localhost:8080/api/employees/login",
         formData
       );
+
       if (res.status === 200) {
-        navigate("/dashboard");
+        const user = res.data;
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+        if (user.role === "DELIVERY") {
+          window.location.href = "http://localhost:5174";
+        } else if (user.role === "HR") {
+          window.location.href = "http://localhost:5155";
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (err) {
       setErrorMessage(err.response?.data?.message || "Login failed");
