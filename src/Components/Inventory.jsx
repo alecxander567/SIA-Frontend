@@ -5,7 +5,6 @@ import {
   FaBell,
   FaSignOutAlt,
   FaSearch,
-  FaCog,
   FaBars,
   FaTimes,
   FaChevronLeft,
@@ -13,12 +12,13 @@ import {
   FaPlus,
   FaEdit,
   FaUser,
+  FaMoneyBillWave,
+  FaTags,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Image as ImageIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const InputField = ({ label, name, type = "text", value, onChange }) => (
@@ -72,23 +72,34 @@ function Inventory() {
     image: null,
   });
 
-  const fetchItems = async (category = "All Categories") => {
+  const fetchItems = async () => {
     try {
       let url = "http://localhost:8080/api/items";
-      if (category && category !== "All Categories") {
-        url += `?category=${encodeURIComponent(category.toLowerCase())}`;
+      const params = {};
+
+      if (selectedCategory && selectedCategory !== "All Categories") {
+        params.category = selectedCategory.toLowerCase();
       }
 
-      const response = await axios.get(url);
+      if (searchQuery && searchQuery.trim() !== "") {
+        url = "http://localhost:8080/api/items/search";
+        params.name = searchQuery;
+      }
+
+      const response = await axios.get(url, { params });
       setItems(response.data);
     } catch (error) {
       console.error("Error fetching items:", error);
     }
   };
 
+  const handleSearch = () => {
+    fetchItems();
+  };
+
   useEffect(() => {
-    fetchItems(selectedCategory);
-  }, [selectedCategory]);
+    fetchItems();
+  }, [selectedCategory, searchQuery]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -215,23 +226,6 @@ function Inventory() {
     }, 3000);
   };
 
-  const handleSearch = () => {
-    fetchItemsBySearch(searchQuery);
-  };
-
-  const fetchItemsBySearch = async (query) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/api/items/search?name=${encodeURIComponent(
-          query
-        )}`
-      );
-      setItems(response.data);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:8080/api/employees/logout");
@@ -330,25 +324,15 @@ function Inventory() {
         <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
           <h1 class="text-lg">Inventory</h1>
           <div></div>
-          <div className="flex items-center gap-2">
+          <div className="relative w-80">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search an item..."
               value={searchQuery}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
-              }}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 rounded-md border border-blue-400 text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button
-              onClick={handleSearch}
-              className="bg-white text-black p-2 px-4 rounded-md hover:bg-gray-200"
-            >
-              <FaSearch />
-            </button>
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
           </div>
         </header>
 
@@ -395,7 +379,6 @@ function Inventory() {
 
         {/* Main Content */}
         <div className="px-5 py-4 flex flex-col gap-6">
-          {/* First row: Add button + first 3 items (or only Add button if empty) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <button
               onClick={handleAddNew}
@@ -405,7 +388,6 @@ function Inventory() {
               Add New Item
             </button>
 
-            {/* Only render items if present */}
             {items.length > 0 &&
               items.slice(0, 3).map((item, index) => (
                 <div
@@ -432,36 +414,47 @@ function Inventory() {
                     <h3 className="text-base font-semibold truncate">
                       {item.itemName}
                     </h3>
-                    <p className="text-sm text-black-700">
-                      Price : ₱{item.price}
+                    <p className="flex items-center gap-2 text-sm text-gray-700">
+                      <FaMoneyBillWave className="text-green-500" />
+                      <span className="font-semibold">
+                        ₱{Number(item.price).toFixed(2)}
+                      </span>
                     </p>
-                    <p className="text-sm text-black-500">
-                      Category: {item.category}
+
+                    <p className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaTags className="text-purple-500" />
+                      <span className="font-semibold">{item.category}</span>
                     </p>
-                    <p className="text-sm text-black-500">
-                      Quantity: {item.quantity} {item.unit}
+
+                    <p className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaBox className="text-blue-500" />
+                      <span className="font-semibold">
+                        {item.quantity} {item.unit}
+                      </span>
                     </p>
                   </div>
 
                   <div className="mt-4 flex gap-2">
                     <button
-                      className="bg-gray-500 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-gray-600"
+                      className="flex items-center justify-center gap-2 bg-gray-500 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-gray-600"
                       onClick={() => setConfirmDeleteId(item.id)}
                     >
-                      Delete
+                      <FaTimes />
+                      <span>Delete</span>
                     </button>
+
                     <button
-                      className="bg-yellow-600 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-yellow-700"
+                      className="flex items-center justify-center gap-2 bg-yellow-600 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-yellow-700"
                       onClick={() => handleEdit(item)}
                     >
-                      Edit
+                      <FaEdit />
+                      <span>Edit</span>
                     </button>
                   </div>
                 </div>
               ))}
           </div>
 
-          {/* Remaining items - 4 per row */}
           {items.length > 3 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {items.slice(3).map((item, index) => (
@@ -489,29 +482,41 @@ function Inventory() {
                     <h3 className="text-base font-semibold truncate">
                       {item.itemName}
                     </h3>
-                    <p className="text-sm text-black-700">
-                      Price : ₱{item.price}
+                    <p className="flex items-center gap-2 text-sm text-gray-700">
+                      <FaMoneyBillWave className="text-green-500" />
+                      <span className="font-semibold">
+                        ₱{Number(item.price).toFixed(2)}
+                      </span>
                     </p>
-                    <p className="text-sm text-black-500">
-                      Category: {item.category}
+
+                    <p className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaTags className="text-purple-500" />
+                      <span className="font-semibold">{item.category}</span>
                     </p>
-                    <p className="text-sm text-black-500">
-                      Quantity: {item.quantity} {item.unit}
+
+                    <p className="flex items-center gap-2 text-sm text-gray-600">
+                      <FaBox className="text-blue-500" />
+                      <span className="font-semibold">
+                        {item.quantity} {item.unit}
+                      </span>
                     </p>
                   </div>
 
                   <div className="mt-4 flex gap-2">
                     <button
-                      className="bg-gray-500 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-gray-600"
+                      className="flex items-center justify-center gap-2 bg-gray-500 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-gray-600"
                       onClick={() => setConfirmDeleteId(item.id)}
                     >
-                      Delete
+                      <FaTimes />
+                      <span>Delete</span>
                     </button>
+
                     <button
-                      className="bg-yellow-600 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-yellow-700"
+                      className="flex items-center justify-center gap-2 bg-yellow-600 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-yellow-700"
                       onClick={() => handleEdit(item)}
                     >
-                      Edit
+                      <FaEdit />
+                      <span>Edit</span>
                     </button>
                   </div>
                 </div>
@@ -519,7 +524,6 @@ function Inventory() {
             </div>
           )}
 
-          {/* Empty message shown *below* the grid for stable layout */}
           {items.length === 0 && (
             <div className="text-center text-gray-500 py-10">
               No items found in "{selectedCategory}" category.
@@ -577,11 +581,9 @@ function Inventory() {
             </div>
           )}
 
-          {/* Modal */}
           <AnimatePresence>
             {showModal && (
               <>
-                {/* Backdrop */}
                 <motion.div
                   className="fixed inset-0 bg-gray bg-opacity-50 z-40"
                   initial={{ opacity: 0 }}
@@ -589,7 +591,6 @@ function Inventory() {
                   exit={{ opacity: 0 }}
                 />
 
-                {/* Modal Content */}
                 <motion.div
                   className="fixed inset-0 z-50 flex items-center justify-center"
                   initial={{ opacity: 0, y: 50 }}
@@ -621,7 +622,6 @@ function Inventory() {
                           onChange={handleChange}
                         />
 
-                        {/* Price */}
                         <InputField
                           label="Price"
                           name="price"
@@ -630,7 +630,6 @@ function Inventory() {
                           onChange={handleChange}
                         />
 
-                        {/* Category Dropdown */}
                         <div className="w-full mb-3">
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Category
@@ -650,7 +649,6 @@ function Inventory() {
                           </select>
                         </div>
 
-                        {/* Unit Dropdown */}
                         <div className="w-full mb-3">
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Unit
@@ -668,7 +666,6 @@ function Inventory() {
                           </select>
                         </div>
 
-                        {/* Quantity */}
                         <InputField
                           label="Quantity"
                           name="quantity"
@@ -678,7 +675,6 @@ function Inventory() {
                         />
                       </div>
 
-                      {/* Image Upload Field */}
                       <div className="w-full mb-3">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Upload Image
@@ -692,7 +688,6 @@ function Inventory() {
                         />
                       </div>
 
-                      {/* Buttons */}
                       <div className="flex justify-end gap-2 mt-6">
                         <button
                           type="button"
