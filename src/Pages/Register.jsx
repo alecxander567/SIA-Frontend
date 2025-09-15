@@ -190,7 +190,7 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md bg-white/60 backdrop-blur-sm text-black"
-                placeholder="8-16 characters"
+                placeholder="Enter your password..."
                 required
               />
               <button

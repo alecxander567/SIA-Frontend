@@ -264,7 +264,8 @@ function Orders() {
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
                   } hover:bg-gray-800 hover:text-white`}
                 >
-                  <div className="p-3 text-center">{order.orderNo}</div>
+                  {/* Instead of order.orderNo, show index + 1 */}
+                  <div className="p-3 text-center">{index + 1}</div>
                   <div className="p-3 text-center truncate">{order.item}</div>
                   <div className="p-3 text-center truncate">
                     {order.customer}
@@ -279,27 +280,27 @@ function Orders() {
                   <div className="p-3 text-center">
                     <span
                       className={`px-3 py-1 rounded-full font-medium text-xs
-                            ${
-                              order.status.toLowerCase() === "cancelled"
-                                ? "bg-red-500 text-white"
-                                : ""
-                            }
-                            ${
-                              order.status.toLowerCase() === "pending"
-                                ? "bg-yellow-300 text-black"
-                                : ""
-                            }
-                            ${
-                              order.status.toLowerCase() === "delivered"
-                                ? "bg-green-500 text-white"
-                                : ""
-                            }
-                            ${
-                              order.status.toLowerCase() === "shipped"
-                                ? "bg-blue-500 text-white"
-                                : ""
-                            }
-                          `}
+          ${
+            order.status.toLowerCase() === "cancelled"
+              ? "bg-red-500 text-white"
+              : ""
+          }
+          ${
+            order.status.toLowerCase() === "pending"
+              ? "bg-yellow-300 text-black"
+              : ""
+          }
+          ${
+            order.status.toLowerCase() === "delivered"
+              ? "bg-green-500 text-white"
+              : ""
+          }
+          ${
+            order.status.toLowerCase() === "shipped"
+              ? "bg-blue-500 text-white"
+              : ""
+          }
+        `}
                     >
                       {order.status}
                     </span>

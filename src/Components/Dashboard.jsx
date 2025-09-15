@@ -44,7 +44,7 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://eighty-cups-flash.loca.lt/Sales-Overview")
+      .get("https://dark-bikes-act.loca.lt/Sales-Overview")
       .then((res) => {
         console.log("API Data:", res.data);
 
@@ -64,7 +64,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://eighty-cups-flash.loca.lt/");
+        const res = await axios.get("https://dark-bikes-act.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -152,7 +152,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("https://eighty-cups-flash.loca.lt/profitexpenses")
+    fetch("https://dark-bikes-act.loca.lt/profitexpenses")
       .then((res) => res.json())
       .then((data) => {
         const combinedData = data.months.map((month, index) => ({
