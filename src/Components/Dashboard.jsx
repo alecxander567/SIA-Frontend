@@ -41,6 +41,7 @@ function Dashboard() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [outOfStock, setOutOfStock] = useState(0);
   const [financeData, setFinanceData] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState("");
 
   useEffect(() => {
     axios
@@ -165,6 +166,10 @@ function Dashboard() {
       })
       .catch((err) => console.error("Error fetching data:", err));
   }, []);
+
+  const filteredData = selectedMonth
+    ? financeData.filter((item) => item.month <= selectedMonth)
+    : financeData;
 
   const handleLogout = async () => {
     try {
@@ -463,18 +468,33 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Expense vs Profit Chart */}
         <div className="px-4 md:px-6 lg:px-10 pb-6 lg:pb-10">
           <div className="bg-white p-6 rounded-xl shadow-lg text-black">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <FaChartLine className="text-blue-600" />
-              Expense vs Profit
-            </h2>
+            {/* Title with month picker on the right */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <FaChartLine className="text-blue-600" />
+                Expense vs Profit
+              </h2>
+
+              {/* Month Picker */}
+              <div className="flex items-center gap-2">
+                <label htmlFor="monthPicker" className="font-medium">
+                  Select Month:
+                </label>
+                <input
+                  type="month"
+                  id="monthPicker"
+                  className="border border-gray-300 rounded px-2 py-1"
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                />
+              </div>
+            </div>
 
             {/* Chart container with gradient background */}
             <div className="w-full h-64 md:h-80 bg-gradient-to-r from-green-100 via-white to-red-100 rounded-md p-4">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={financeData}>
+                <LineChart data={filteredData}>
                   <XAxis
                     dataKey="month"
                     stroke="#000"

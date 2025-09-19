@@ -37,7 +37,7 @@ function Register() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/employees/signup",
+        "http://localhost:8080/api/users/signup",
         formData
       );
       if (response.status === 200) {
