@@ -141,7 +141,7 @@ function Notifications() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8080/api/employees/logout");
+      await axios.post("http://localhost:8080/api/users/logout");
       localStorage.removeItem("user");
       navigate("/");
     } catch (error) {
