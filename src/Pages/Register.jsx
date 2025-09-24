@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaArrowLeft,
   FaUser,
@@ -9,7 +9,6 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import axios from "axios";
-import { useState } from "react";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -48,11 +47,13 @@ function Register() {
           position: "",
           email: "",
           password: "",
+          sex: "",
+          contactNumber: "",
         });
       }
     } catch (error) {
       alert(
-        "Sign up failed: " + error.response?.data?.message || "Server error"
+        "Sign up failed: " + (error.response?.data?.message || "Server error")
       );
     }
   };
@@ -64,6 +65,7 @@ function Register() {
           <FaUser className="text-black" />
           Sign Up
         </h2>
+
         {successMessage && (
           <div className="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-400">
             {successMessage}
@@ -78,6 +80,8 @@ function Register() {
           >
             <FaArrowLeft />
           </a>
+
+          {/* First and Last Name */}
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
@@ -110,6 +114,8 @@ function Register() {
               />
             </div>
           </div>
+
+          {/* Email and Position */}
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
@@ -139,12 +145,14 @@ function Register() {
                 required
               >
                 <option value="">Select a position</option>
-                <option value="Admin">Admin</option>
-                <option value="Delivery Guy">Rider</option>
-                <option value="Rider">Human Resource</option>
+                <option value="ADMIN">Admin</option>
+                <option value="RIDER">Rider</option>
+                <option value="HR">HR</option>
               </select>
             </div>
           </div>
+
+          {/* Sex and Contact Number */}
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-sm font-medium mb-1 text-black">
@@ -178,6 +186,8 @@ function Register() {
               />
             </div>
           </div>
+
+          {/* Password */}
           <div>
             <label className="block text-sm font-medium mb-1 text-black flex items-center gap-2">
               <FaLock />
@@ -204,6 +214,7 @@ function Register() {
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800 transition"
@@ -212,7 +223,6 @@ function Register() {
           </button>
         </form>
 
-        {/* Log In Link */}
         <p className="mt-6 text-center text-sm text-black">
           Already have an account?{" "}
           <a

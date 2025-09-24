@@ -42,10 +42,76 @@ function Dashboard() {
   const [outOfStock, setOutOfStock] = useState(0);
   const [financeData, setFinanceData] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const monthMap = {
+    January: "01",
+    February: "02",
+    March: "03",
+    April: "04",
+    May: "05",
+    June: "06",
+    July: "07",
+    August: "08",
+    September: "09",
+    October: "10",
+    November: "11",
+    December: "12",
+  };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+  const [timeInClicked, setTimeInClicked] = useState(false);
+  const [timeOutClicked, setTimeOutClicked] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
+
+  const handleTimeIn = async () => {
+    setTimeInClicked(true);
+    try {
+      const res = await axios.post(
+        `http://localhost:8080/api/users/${userId}/attendance`
+      );
+      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+
+      setAlertMessage(
+        `Time In: ${userAttendance.timeIn} | Status: ${userAttendance.attendanceStatus}`
+      );
+      setTimeout(() => setAlertMessage(""), 3000);
+      setAlertType("success");
+    } catch (err) {
+      setAlertMessage(
+        err.response?.data?.message || "Failed to record Time In"
+      );
+      setAlertType("error");
+      setTimeout(() => setAlertMessage(""), 3000);
+    } finally {
+      setTimeInClicked(false);
+    }
+  };
+
+  const handleTimeOut = async () => {
+    setTimeOutClicked(true);
+    try {
+      const res = await axios.post(
+        `http://localhost:8080/api/users/${userId}/timeout`
+      );
+      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+
+      setTimeout(() => setAlertMessage(""), 3000);
+      setAlertMessage(`Time Out: ${userAttendance.timeOut}`);
+      setAlertType("success");
+    } catch (err) {
+      setAlertMessage(
+        err.response?.data?.message || "Failed to record Time Out"
+      );
+      setAlertType("error");
+      setTimeout(() => setAlertMessage(""), 3000);
+    } finally {
+      setTimeOutClicked(false);
+    }
+  };
 
   useEffect(() => {
     axios
-      .get("https://dark-bikes-act.loca.lt/Sales-Overview")
+      .get("https://tasty-masks-serve.loca.lt/Sales-Overview")
       .then((res) => {
         console.log("API Data:", res.data);
 
@@ -65,7 +131,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://dark-bikes-act.loca.lt/");
+        const res = await axios.get("https://tasty-masks-serve.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -153,11 +219,12 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("https://dark-bikes-act.loca.lt/profitexpenses")
+    fetch("https://tasty-masks-serve.loca.lt/profitexpenses")
       .then((res) => res.json())
       .then((data) => {
         const combinedData = data.months.map((month, index) => ({
-          month: month,
+          month: `2025-${monthMap[month]}`,
+          label: month,
           profit: data.profit[index],
           expense: data.expenses[index],
         }));
@@ -254,6 +321,38 @@ function Dashboard() {
       <main className="flex-1 bg-gray-100 text-black overflow-y-auto md:ml-0">
         <header className="h-16 bg-black text-white px-4 md:px-10 flex items-center justify-between">
           <h1 className="text-lg font-semibold">Dashboard</h1>
+
+          <div className="flex space-x-4">
+            <button
+              onClick={handleTimeIn}
+              disabled={timeInClicked}
+              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white transition disabled:opacity-50"
+            >
+              Time In
+            </button>
+
+            <button
+              onClick={handleTimeOut}
+              disabled={timeOutClicked}
+              className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition disabled:opacity-50"
+            >
+              Time Out
+            </button>
+
+            {alertMessage && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                <div
+                  className={`p-4 rounded shadow-lg pointer-events-auto text-xl ${
+                    alertType === "success"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {alertMessage}
+                </div>
+              </div>
+            )}
+          </div>
         </header>
 
         {/* Dashboard Stats Cards */}
@@ -496,7 +595,7 @@ function Dashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={filteredData}>
                   <XAxis
-                    dataKey="month"
+                    dataKey="label"
                     stroke="#000"
                     fontSize={12}
                     angle={-45}

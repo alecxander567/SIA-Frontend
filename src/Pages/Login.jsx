@@ -36,12 +36,13 @@ function Login() {
 
         localStorage.setItem("user", JSON.stringify(user));
 
-        if (user.role === "DELIVERY") {
-          window.location.href = "http://localhost:5174";
-        } else if (user.role === "HR") {
-          window.location.href = "http://localhost:5155";
+        const position = user.position.toUpperCase();
+        if (position === "RIDER" || position === "DELIVERY") {
+          window.location.href = "http://localhost:5173/riderhomepage";
+        } else if (position === "HR") {
+          window.location.href = "http://localhost:5173/hrhomepage";
         } else {
-          navigate("/dashboard");
+          window.location.href = "http://localhost:5173/dashboard";
         }
       }
     } catch (err) {
