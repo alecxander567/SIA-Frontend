@@ -1,8 +1,8 @@
-# SIA-Frontend
+# 🛍️ SIA-Frontend
 
-SIA-Frontend is a simple and modern web application for managing products and monitoring business operations. Designed for administrators, it provides a user-friendly front end and a robust backend, allowing seamless product management, order tracking, and employee status monitoring.
+SIA-Frontend is a modern web application for managing products and monitoring business operations. Designed for administrators, it provides a user-friendly interface to handle inventory, track orders, and oversee employee activity. Built with React and Tailwind CSS, it connects seamlessly to a Spring Boot backend.
 
-## Technologies Used
+## 🧰 Technologies Used
 
 **Front End:**
 - JavaScript
@@ -15,45 +15,39 @@ SIA-Frontend is a simple and modern web application for managing products and mo
 
 [![My Skills](https://skillicons.dev/icons?i=js,react,tailwind,java,spring,mysql)](https://skillicons.dev)
 
-## Backend Implementation Methods
+## 🔐 Backend Implementation Methods
 
-The backend leverages Spring Boot and exposes secure RESTful APIs to manage products, orders, and employee data. Key methods and approaches include:
+The backend exposes secure RESTful APIs to manage products, orders, and employee data. Key endpoints include:
 
-- **Product Management:**
-  - `GET /api/items`: Fetch all products (optionally filter by category).
-  - `GET /api/items/{id}`: Retrieve a specific product by ID.
-  - `POST /api/items`: Add a new product (with image upload support).
-  - `PUT /api/items/{id}`: Edit an existing product, including updating its image.
-  - `DELETE /api/items/{id}`: Remove a product by ID.
-  - `GET /api/items/search?name=...`: Search for products by name.
+### 🛒 Product Management
+- `GET /api/items`: Fetch all products (with optional category filter)
+- `GET /api/items/{id}`: Retrieve product by ID
+- `POST /api/items`: Add new product (supports image upload)
+- `PUT /api/items/{id}`: Update product details and image
+- `DELETE /api/items/{id}`: Delete product
+- `GET /api/items/search?name=...`: Search products by name
 
-- **Order Tracking:**
-  - `GET /api/orders`: View all orders and their statuses.
-  - Order management endpoints allow for status updates and analysis.
+### 📦 Order Tracking
+- `GET /api/orders`: View all orders and statuses
+- `PUT /api/orders/{id}`: Update order status
 
-- **Employee Status Monitoring:**
-  - Employee data is managed through dedicated endpoints for registration, authentication, and role assignments.
-  - Includes endpoints for viewing and updating employee statuses.
+### 👥 Employee Monitoring
+- `GET /api/employees`: View employee list
+- `POST /api/employees`: Register new employee
+- `PUT /api/employees/{id}`: Update employee status or role
 
-- **Security & Data Management:**
-  - User authentication is handled with encrypted passwords (BCrypt).
-  - Data is persisted in a MySQL database via JPA repositories.
-  - All business logic and validation are enforced in the backend service layer.
+### 🔐 Security & Data
+- Authentication via encrypted passwords (BCrypt)
+- Role-based access control
+- Data persistence with JPA and MySQL
 
-## Features
+## ✨ Frontend Features
 
-- View all products
-- Add new products
-- Edit existing products
-- Delete products
-- Track order status
-- Monitor employee statuses
-- View analysis for top-selling items
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js and npm (for running the front end)
-- Java (for running the backend)
-- MySQL (for the database)
+- 🔍 Search and filter products
+- ➕ Add new products with image upload
+- ✏️ Edit product details
+- 🗑️ Delete products
+- 📊 View top-selling items
+- 📦 Track order statuses
+- 👤 Monitor employee activity
+- 📈 Dashboard with business metrics
