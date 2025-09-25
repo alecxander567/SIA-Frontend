@@ -44,11 +44,21 @@ function RiderHomepage() {
       const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
 
       setAlertMessage(
-        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.attendanceStatus})`
+        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
       );
       setAlertType("success");
 
-      setAttendance((prev) => ({ ...prev, timeIn: userAttendance.timeIn }));
+      setAttendance((prev) =>
+        prev.map((emp) =>
+          emp.id === user.id
+            ? {
+                ...emp,
+                timeIn: userAttendance.timeIn,
+                attendanceStatus: userAttendance.attendanceStatus,
+              }
+            : emp
+        )
+      );
 
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
@@ -69,7 +79,11 @@ function RiderHomepage() {
       setAlertMessage(`Time Out recorded: ${userAttendance.timeOut}`);
       setAlertType("success");
 
-      setAttendance((prev) => ({ ...prev, timeOut: userAttendance.timeOut }));
+      setAttendance((prev) =>
+        prev.map((emp) =>
+          emp.id === user.id ? { ...emp, timeOut: userAttendance.timeOut } : emp
+        )
+      );
 
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
@@ -81,40 +95,48 @@ function RiderHomepage() {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/orders");
+      const orders = res.data;
+
+      const filteredOrders = orders.filter((order) => {
+        const orderDate = new Date(order.order_date)
+          .toISOString()
+          .split("T")[0];
+        return orderDate === selectedDate;
+      });
+
+      const total = filteredOrders.length;
+      const pending = filteredOrders.filter(
+        (order) =>
+          order.status === "Pending" || order.status === "Pending Payment"
+      ).length;
+      const delivered = filteredOrders.filter(
+        (order) => order.status === "Delivered"
+      ).length;
+
+      setStats({
+        total,
+        pending,
+        delivered,
+        todaysOrders: total,
+      });
+
+      setOrdersToday(filteredOrders);
+
+      console.log("Fetched orders:", filteredOrders);
+      filteredOrders.forEach((order) => {
+        console.log(
+          `Order ${order.orderId}: status = ${order.status}, payment = ${order.payment_type}`
+        );
+      });
+    } catch (err) {
+      console.error("Failed to fetch orders:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/api/orders");
-        const orders = res.data;
-
-        const filteredOrders = orders.filter((order) => {
-          const orderDate = new Date(order.order_date)
-            .toISOString()
-            .split("T")[0];
-          return orderDate === selectedDate;
-        });
-
-        const total = filteredOrders.length;
-        const pending = filteredOrders.filter(
-          (order) => order.status === "Pending"
-        ).length;
-        const delivered = filteredOrders.filter(
-          (order) => order.status === "Delivered"
-        ).length;
-
-        setStats({
-          total,
-          pending,
-          delivered,
-          todaysOrders: total,
-        });
-
-        setOrdersToday(filteredOrders);
-      } catch (err) {
-        console.error("Failed to fetch orders:", err);
-      }
-    };
-
     fetchOrders();
 
     const interval = setInterval(fetchOrders, 5000);
@@ -125,11 +147,13 @@ function RiderHomepage() {
   const handleMarkAsDelivered = async (orderId) => {
     try {
       await axios.put(`http://localhost:8080/api/orders/${orderId}/delivered`);
+
       setOrdersToday((prev) =>
         prev.map((order) =>
           order.orderId === orderId ? { ...order, status: "Delivered" } : order
         )
       );
+
       setStats((prev) => ({
         ...prev,
         delivered: prev.delivered + 1,
@@ -141,7 +165,7 @@ function RiderHomepage() {
   };
 
   const filteredOrders = ordersToday.filter((order) =>
-    order.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+    order.customer_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleShowLocation = (address) => {
@@ -174,12 +198,14 @@ function RiderHomepage() {
             <h1 className="text-2xl font-bold">N-Tech Hardware</h1>
           </div>
 
-          {/* Search */}
+          {/* Search - Fixed to connect to searchTerm state */}
           <div className="flex-1 flex justify-end mx-6">
             <div className="relative w-80">
               <input
                 type="text"
                 placeholder="Search by customer..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-md border border-blue-400 text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
@@ -332,7 +358,7 @@ function RiderHomepage() {
                   <p className="flex items-center gap-2">
                     <FaMoneyBill className="text-yellow-500" />
                     <span className="font-semibold">
-                      ₱{order.total_price.toFixed(2)}
+                      ₱{order.total_price?.toFixed(2) || "0.00"}
                     </span>
                   </p>
                   <p className="flex items-center gap-2">
@@ -342,10 +368,14 @@ function RiderHomepage() {
                           ? "text-green-600"
                           : order.status === "Cancelled"
                           ? "text-red-500"
+                          : order.status === "Pending Payment"
+                          ? "text-orange-500"
                           : "text-gray-500"
                       }
                     />
-                    <span className="font-semibold">{order.status}</span>
+                    <span className="font-semibold">
+                      {order.status || "Unknown"}
+                    </span>
                   </p>
                   <p className="flex items-center gap-2 pr-16">
                     <FaMapMarkerAlt className="text-red-500" />

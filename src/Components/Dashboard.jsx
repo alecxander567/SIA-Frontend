@@ -72,8 +72,21 @@ function Dashboard() {
       const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
 
       setAlertMessage(
-        `Time In: ${userAttendance.timeIn} | Status: ${userAttendance.attendanceStatus}`
+        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
       );
+
+      setAttendance((prev) =>
+        prev.map((emp) =>
+          emp.id === user.id
+            ? {
+                ...emp,
+                timeIn: userAttendance.timeIn,
+                attendanceStatus: userAttendance.attendanceStatus, 
+              }
+            : emp
+        )
+      );
+
       setTimeout(() => setAlertMessage(""), 3000);
       setAlertType("success");
     } catch (err) {
@@ -94,6 +107,12 @@ function Dashboard() {
         `http://localhost:8080/api/users/${userId}/timeout`
       );
       const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+
+      setAttendance((prev) =>
+        prev.map((emp) =>
+          emp.id === user.id ? { ...emp, timeOut: userAttendance.timeOut } : emp
+        )
+      );
 
       setTimeout(() => setAlertMessage(""), 3000);
       setAlertMessage(`Time Out: ${userAttendance.timeOut}`);

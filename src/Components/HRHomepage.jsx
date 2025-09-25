@@ -20,6 +20,12 @@ function Homepage() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
+  const [todayDate, setTodayDate] = useState(null);
+  const [allEmployees, setAllEmployees] = useState([]);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
+  const [attendanceDate, setAttendanceDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
 
   const [stats, setStats] = useState([
     { label: "Total Users", value: 0, icon: Users, color: "text-blue-500" },
@@ -37,11 +43,59 @@ function Homepage() {
     { day: "Fri", Present: 70, Absent: 20 },
   ];
 
-  // Generate calendar
+  const employeesWithAttendance = allEmployees.map((emp) => {
+    const record = attendanceRecords.find((r) => r.id === emp.id);
+    return {
+      ...emp,
+      attendanceStatus: record?.attendanceStatus || "ABSENT",
+      timeIn: record?.timeIn || null,
+      timeOut: record?.timeOut || null,
+    };
+  });
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/users");
+        setAllEmployees(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchEmployees();
+  }, []);
+
+  const fetchAttendanceByDate = async (date) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/users/attendance?date=${date}`
+      );
+      setAttendanceRecords(res.data);
+    } catch (err) {
+      console.error("Error fetching attendance:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAttendanceByDate(attendanceDate);
+  }, []);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setHrName({
+        firstName: storedUser.firstName,
+        lastName: storedUser.lastName,
+      });
+    }
+  }, []);
+
   useEffect(() => {
     const today = new Date();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
+    const currentDate = today.getDate();
+
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
     const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
 
@@ -52,6 +106,7 @@ function Homepage() {
     setDays(tempDays);
     setMonth(today.toLocaleString("default", { month: "long" }));
     setYear(currentYear);
+    setTodayDate(currentDate);
   }, []);
 
   useEffect(() => {
@@ -125,8 +180,9 @@ function Homepage() {
       const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
 
       setAlertMessage(
-        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.attendanceStatus})`
+        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
       );
+
       setAlertType("success");
 
       setAttendance((prev) =>
@@ -140,7 +196,7 @@ function Homepage() {
             : emp
         )
       );
-      
+
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
       setAlertMessage(err.response?.data?.message || "Error recording Time In");
@@ -176,13 +232,39 @@ function Homepage() {
     }
   };
 
+  const handleExcuse = async (userId) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:8080/api/users/${userId}/excuse`
+      );
+
+      const updatedUser = Array.isArray(res.data) ? res.data[0] : res.data;
+
+      setAttendance((prev) =>
+        prev.map((emp) =>
+          emp.id === userId
+            ? { ...emp, attendanceStatus: updatedUser.attendanceStatus }
+            : emp
+        )
+      );
+
+      setAlertMessage(`Employee excused successfully`);
+      setAlertType("success");
+      setTimeout(() => setAlertMessage(""), 3000);
+    } catch (err) {
+      setAlertMessage(err.response?.data?.message || "Error excusing employee");
+      setAlertType("error");
+      setTimeout(() => setAlertMessage(""), 3000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6 space-y-6">
       {/* Navbar */}
       <div className="flex items-center justify-between bg-white shadow rounded-2xl px-6 py-4">
         <div>
           <p className="text-gray-700 text-sm">
-            Welcome, {hrName.firstName} {hrName.lastName}
+            Welcome, {hrName?.firstName || ""} {hrName?.lastName || ""}
           </p>
           <h1 className="text-2xl font-bold">HR Dashboard</h1>
         </div>
@@ -252,27 +334,36 @@ function Homepage() {
 
         {/* Calendar */}
         <div className="p-5 bg-white shadow-lg rounded-2xl">
-          <h2 className="text-lg font-semibold mb-2">
-            {month} {year}
-          </h2>
-          <div className="grid grid-cols-7 gap-2 mb-2 text-gray-500 font-medium text-sm">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-              <div key={day} className="text-center">
-                {day}
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-2">
-            {days.map((day, index) => (
-              <div
-                key={index}
-                className={`p-3 text-center rounded-lg cursor-pointer transition ${
-                  day ? "bg-blue-50 text-blue-700 hover:bg-blue-200" : ""
-                }`}
-              >
-                {day || ""}
-              </div>
-            ))}
+          <div className="p-5 bg-white shadow-lg rounded-2xl">
+            <h2 className="text-lg font-semibold mb-2">
+              {month} {year}
+            </h2>
+            {/* Day headers */}
+            <div className="grid grid-cols-7 gap-2 mb-2 text-gray-500 font-medium text-sm">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div key={day} className="text-center">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            {/* Days */}
+            <div className="grid grid-cols-7 gap-2">
+              {days.map((day, index) => {
+                const isToday = day === todayDate;
+                return (
+                  <div
+                    key={index}
+                    className={`p-3 text-center rounded-lg cursor-pointer transition
+            ${day ? "bg-blue-50 text-blue-700 hover:bg-blue-200" : ""}
+            ${isToday ? "bg-blue-500 text-white hover:bg-blue-600" : ""}
+          `}
+                  >
+                    {day || ""}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -285,12 +376,29 @@ function Homepage() {
             data={attendanceData}
             margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
           >
+            <defs>
+              <linearGradient
+                id="redOrangeGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="0%" stopColor="#FF4500" />
+                <stop offset="100%" stopColor="#FFA500" />
+              </linearGradient>
+
+              <linearGradient id="grayGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#A3A3A3" />
+                <stop offset="100%" stopColor="#6B7280" />{" "}
+              </linearGradient>
+            </defs>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="Present" fill="#34D399" />
-            <Bar dataKey="Absent" fill="#F87171" />
+            <Bar dataKey="Present" fill="url(#redOrangeGradient)" />
+            <Bar dataKey="Absent" fill="url(#grayGradient)" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -298,34 +406,41 @@ function Homepage() {
       {/* Employee Table */}
       <div className="bg-white shadow-lg rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Employee List</h2>
+          <h2 className="text-xl font-semibold">Employee Attendance</h2>
           <input
             type="date"
+            value={attendanceDate}
+            onChange={(e) => {
+              setAttendanceDate(e.target.value);
+              fetchAttendanceByDate(e.target.value);
+            }}
             className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse rounded-lg mt-4">
-            <thead className="bg-black">
+        <div className="overflow-x-auto mt-4">
+          <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl">
+            <thead className="bg-gray-900">
               <tr>
-                {["ID", "Name", "Department", "Status"].map((header) => (
-                  <th
-                    key={header}
-                    className="text-left p-3 text-white uppercase text-sm"
-                  >
-                    {header}
-                  </th>
-                ))}
+                {["ID", "Name", "Department", "Status", "Action"].map(
+                  (header) => (
+                    <th
+                      key={header}
+                      className="text-left p-3 text-white uppercase text-sm tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
 
             <tbody>
-              {attendance.map((emp, idx) => {
+              {employeesWithAttendance.map((emp, idx) => {
                 let statusBg = "";
                 let statusText = "text-white";
 
-                const status = emp.attendanceStatus || "ABSENT";
+                const status = emp.attendanceStatus;
 
                 switch (status) {
                   case "ON_TIME":
@@ -338,6 +453,9 @@ function Homepage() {
                   case "ABSENT":
                     statusBg = "bg-red-500";
                     break;
+                  case "EXCUSED":
+                    statusBg = "bg-gray-600";
+                    break;
                   default:
                     statusBg = "bg-gray-200";
                     statusText = "text-gray-800";
@@ -348,19 +466,27 @@ function Homepage() {
                     key={emp.id}
                     className={`${
                       idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } hover:bg-gray-100 transition`}
+                    } transition hover:bg-gray-100`}
                   >
-                    <td className="p-3">{idx + 1}</td> {/* Sequential number */}
-                    <td className="p-3 font-medium">
+                    <td className="p-3 text-gray-700">{idx + 1}</td>
+                    <td className="p-3 font-medium text-gray-800">
                       {emp.firstName} {emp.lastName}
                     </td>
-                    <td className="p-3">{emp.position}</td>
-                    <td className="p-3 text-center">
+                    <td className="p-3 text-gray-600">{emp.position}</td>
+                    <td className="p-3">
                       <span
-                        className={`px-3 py-1 text-sm font-semibold ${statusBg} ${statusText} rounded-full`}
+                        className={`px-3 py-1 text-sm font-semibold ${statusBg} ${statusText} rounded-full shadow-sm min-w-[60px] text-center inline-block`}
                       >
                         {status}
                       </span>
+                    </td>
+                    <td className="p-3">
+                      <button
+                        className="px-4 py-2 bg-yellow-600 text-white text-base font-medium rounded hover:bg-yellow-800 transition whitespace-nowrap"
+                        onClick={() => handleExcuse(emp.id)}
+                      >
+                        Excuse
+                      </button>
                     </td>
                   </tr>
                 );
