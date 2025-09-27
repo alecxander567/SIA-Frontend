@@ -299,7 +299,7 @@ function Landingpage() {
               <FaPhoneAlt /> +63 987 654 3210
             </p>
             <p className="flex items-center justify-center md:justify-start gap-2 pt-2">
-              <FaEnvelope /> support@toolhaven.com
+              <FaEnvelope /> support@N-Tech.com
             </p>
           </div>
           <div className="text-center md:text-left space-y-2">

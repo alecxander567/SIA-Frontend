@@ -220,7 +220,7 @@ function ProfileManagement() {
               <span className="text-sm text-white">Excused</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-4 w-4 rounded-full bg-red-400 inline-block border border-white"></span>
+              <span className="h-4 w-4 rounded-full bg-red-500 inline-block border border-white"></span>
               <span className="text-sm text-white">Absent</span>
             </div>
           </div>

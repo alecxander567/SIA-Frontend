@@ -140,7 +140,7 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://tasty-masks-serve.loca.lt/Sales-Overview")
+      .get("https://every-zoos-judge.loca.lt/Sales-Overview")
       .then((res) => {
         console.log("API Data:", res.data);
 
@@ -160,7 +160,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://tasty-masks-serve.loca.lt/");
+        const res = await axios.get("https://every-zoos-judge.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -248,7 +248,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("https://tasty-masks-serve.loca.lt/profitexpenses")
+    fetch("https://every-zoos-judge.loca.lt/profitexpenses")
       .then((res) => res.json())
       .then((data) => {
         const combinedData = data.months.map((month, index) => ({

@@ -41,27 +41,22 @@ function RiderHomepage() {
         `http://localhost:8080/api/users/${user.id}/attendance`
       );
 
-      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+      const userAttendance = res.data; 
 
       setAlertMessage(
         `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
       );
       setAlertType("success");
 
-      setAttendance((prev) =>
-        prev.map((emp) =>
-          emp.id === user.id
-            ? {
-                ...emp,
-                timeIn: userAttendance.timeIn,
-                attendanceStatus: userAttendance.attendanceStatus,
-              }
-            : emp
-        )
-      );
+      setAttendance((prev) => ({
+        ...prev,
+        timeIn: userAttendance.timeIn,
+        attendanceStatus: userAttendance.status,
+      }));
 
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
+      console.error("Time In error:", err);
       setAlertMessage(err.response?.data?.message || "Error recording Time In");
       setAlertType("error");
       setTimeout(() => setAlertMessage(""), 3000);
@@ -74,19 +69,19 @@ function RiderHomepage() {
         `http://localhost:8080/api/users/${user.id}/timeout`
       );
 
-      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+      const userAttendance = res.data; 
 
       setAlertMessage(`Time Out recorded: ${userAttendance.timeOut}`);
       setAlertType("success");
 
-      setAttendance((prev) =>
-        prev.map((emp) =>
-          emp.id === user.id ? { ...emp, timeOut: userAttendance.timeOut } : emp
-        )
-      );
+      setAttendance((prev) => ({
+        ...prev,
+        timeOut: userAttendance.timeOut,
+      }));
 
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
+      console.error("Time Out error:", err); 
       setAlertMessage(
         err.response?.data?.message || "Error recording Time Out"
       );
