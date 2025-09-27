@@ -2,18 +2,15 @@ import {
   FaTachometerAlt,
   FaBox,
   FaClipboardList,
-  FaChartBar,
   FaBell,
   FaSignOutAlt,
-  FaSearch,
   FaChartLine,
   FaFire,
-  FaCog,
   FaBars,
   FaTimes,
   FaUser,
 } from "react-icons/fa";
-import { Users, DollarSign, Package, AlertCircle } from "lucide-react";
+import { DollarSign, Package, AlertCircle } from "lucide-react";
 import {
   PieChart,
   Pie,
@@ -69,31 +66,33 @@ function Dashboard() {
       const res = await axios.post(
         `http://localhost:8080/api/users/${userId}/attendance`
       );
-      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+      console.log("TimeIn Response:", res.data);
 
-      setAlertMessage(
-        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
-      );
+      const { message, status, timeIn } = res.data;
 
-      setAttendance((prev) =>
-        prev.map((emp) =>
-          emp.id === user.id
-            ? {
-                ...emp,
-                timeIn: userAttendance.timeIn,
-                attendanceStatus: userAttendance.attendanceStatus, 
-              }
-            : emp
-        )
-      );
+      setAlertType("success");
+      setAlertMessage(`${message} - Time: ${timeIn} (${status})`);
 
       setTimeout(() => setAlertMessage(""), 3000);
-      setAlertType("success");
     } catch (err) {
-      setAlertMessage(
-        err.response?.data?.message || "Failed to record Time In"
-      );
+      console.error("Time In Error:", err);
+      console.error("Error status:", err.response?.status);
+      console.error("Error response data:", err.response?.data);
+
       setAlertType("error");
+
+      if (err.response?.data) {
+        const errorMessage =
+          err.response.data.message || "Failed to record Time In";
+        setAlertMessage(errorMessage);
+      } else if (err.response?.status === 400) {
+        setAlertMessage("Bad request - please try again");
+      } else if (err.response?.status === 404) {
+        setAlertMessage("User not found");
+      } else {
+        setAlertMessage("Failed to record Time In - Network error");
+      }
+
       setTimeout(() => setAlertMessage(""), 3000);
     } finally {
       setTimeInClicked(false);
@@ -106,22 +105,33 @@ function Dashboard() {
       const res = await axios.post(
         `http://localhost:8080/api/users/${userId}/timeout`
       );
-      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
+      console.log("TimeOut Response:", res.data);
 
-      setAttendance((prev) =>
-        prev.map((emp) =>
-          emp.id === user.id ? { ...emp, timeOut: userAttendance.timeOut } : emp
-        )
-      );
+      const { message, timeOut } = res.data;
+
+      setAlertType("success");
+      setAlertMessage(`${message} - Time: ${timeOut}`);
 
       setTimeout(() => setAlertMessage(""), 3000);
-      setAlertMessage(`Time Out: ${userAttendance.timeOut}`);
-      setAlertType("success");
     } catch (err) {
-      setAlertMessage(
-        err.response?.data?.message || "Failed to record Time Out"
-      );
+      console.error("Time Out Error:", err);
+      console.error("Error status:", err.response?.status);
+      console.error("Error response data:", err.response?.data);
+
       setAlertType("error");
+
+      if (err.response?.data) {
+        const errorMessage =
+          err.response.data.message || "Failed to record Time Out";
+        setAlertMessage(errorMessage);
+      } else if (err.response?.status === 400) {
+        setAlertMessage("Bad request - please try again");
+      } else if (err.response?.status === 404) {
+        setAlertMessage("User not found");
+      } else {
+        setAlertMessage("Failed to record Time Out - Network error");
+      }
+
       setTimeout(() => setAlertMessage(""), 3000);
     } finally {
       setTimeOutClicked(false);

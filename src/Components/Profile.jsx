@@ -11,14 +11,72 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function ProfileManagement() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [weekDays, setWeekDays] = useState([]);
+
+  const getWeekDates = (dateStr) => {
+    const date = dateStr ? new Date(dateStr) : new Date();
+    const day = date.getDay();
+    const monday = new Date(date);
+    monday.setDate(date.getDate() - ((day + 6) % 7));
+
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d.toISOString().split("T")[0]);
+    }
+    return days;
+  };
+
+  useEffect(() => {
+    const fetchWeeklyAttendance = async () => {
+      new Date().toISOString().split("T")[0];
+
+      const week = getWeekDates(selectedDate);
+      setWeekDays(week);
+
+      try {
+        const res = await axios.get(`http://localhost:8080/api/users`);
+        const allUsers = res.data;
+
+        const usersWithWeekStatus = allUsers.map((user) => {
+          const statusArr = week.map((day) => {
+            const attendance = allUsers.find(
+              (u) => u.id === user.id && u.attendanceDate === day
+            );
+
+            if (!attendance) return "gray"; // absent
+            if (attendance.attendanceStatus === "ON_TIME") return "green";
+            if (attendance.attendanceStatus === "LATE") return "yellow";
+            if (attendance.attendanceStatus === "EXCUSED") return "blue";
+            return "red";
+          });
+
+          return {
+            id: user.id,
+            name: `${user.firstName} ${user.lastName}`,
+            position: user.position || "Staff",
+            status: statusArr,
+          };
+        });
+
+        setEmployees(usersWithWeekStatus);
+      } catch (error) {
+        console.error("Error fetching weekly attendance:", error);
+      }
+    };
+
+    fetchWeeklyAttendance();
+  }, [selectedDate]);
 
   const formattedDate = selectedDate
     ? new Date(selectedDate).toLocaleDateString("en-US", {
@@ -122,8 +180,8 @@ function ProfileManagement() {
           </div>
         </header>
 
-        {/* Table Section */}
         <section className="p-6">
+          {/* Date Picker */}
           <div className="px-10 py-4 flex justify-end">
             <div className="relative">
               <button
@@ -137,8 +195,6 @@ function ProfileManagement() {
                 <FaCalendarAlt />
                 {formattedDate}
               </button>
-
-              {/* Hidden native input */}
               <input
                 id="real-date-input"
                 type="date"
@@ -153,131 +209,71 @@ function ProfileManagement() {
           <div className="mt-[-1rem] mb-4 border border-white rounded-lg p-3 inline-flex items-center gap-6 bg-gray-600 shadow-md w-auto">
             <div className="flex items-center gap-2">
               <span className="h-4 w-4 rounded-full bg-green-500 inline-block border border-white"></span>
-              <span className="text-sm text-white">Present</span>
+              <span className="text-sm text-white">On-Time</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="h-4 w-4 rounded-full bg-yellow-400 inline-block border border-white"></span>
               <span className="text-sm text-white">Late</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-4 w-4 rounded-full bg-red-500 inline-block border border-white"></span>
+              <span className="h-4 w-4 rounded-full bg-blue-500 inline-block border border-white"></span>
+              <span className="text-sm text-white">Excused</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-4 w-4 rounded-full bg-red-400 inline-block border border-white"></span>
               <span className="text-sm text-white">Absent</span>
             </div>
           </div>
 
+          {/* Table */}
           <div className="overflow-x-auto rounded-lg shadow-lg bg-white">
             <table className="min-w-full table-fixed border border-gray-300 bg-gray-100">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th
-                    className="w-16 px-4 py-3 border-b text-left font-bold"
-                    rowSpan={2}
-                  >
+                  <th className="w-16 px-4 py-3 border-b text-left font-bold">
                     #
                   </th>
-                  <th
-                    className="px-6 py-3 border-b text-left font-bold"
-                    rowSpan={2}
-                  >
+                  <th className="px-6 py-3 border-b text-left font-bold">
                     Employee Name
                   </th>
-                  <th
-                    className="px-6 py-3 border-b text-left font-bold"
-                    rowSpan={2}
-                  >
-                    Employee Position
+                  <th className="px-6 py-3 border-b text-left font-bold">
+                    Position
                   </th>
-                  <th
-                    className="px-6 py-3 border-b text-center font-bold"
-                    colSpan={5}
-                  >
-                    Attendance Status
-                  </th>
-                </tr>
-                <tr>
-                  {["Mon", "Tue", "Wed", "Thu", "Fri"].map((day, index) => (
+                  {weekDays.map((day) => (
                     <th
-                      key={index}
-                      className="px-2 py-2 border-b text-center text-xs font-semibold"
+                      key={day}
+                      className="px-4 py-3 border-b text-center font-bold"
                     >
-                      {day}
+                      {new Date(day).toLocaleDateString("en-US", {
+                        weekday: "short",
+                      })}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {[
-                  {
-                    name: "John Doe",
-                    position: "Staff",
-                    status: ["green", "green", "green", "green", "green"],
-                  },
-                  {
-                    name: "Jane Smith",
-                    position: "Rider",
-                    status: ["green", "gray", "green", "gray", "green"],
-                  },
-                  {
-                    name: "Alex Garcia",
-                    position: "Maintenance",
-                    status: ["yellow", "green", "green", "gray", "green"],
-                  },
-                  {
-                    name: "Maria Lopez",
-                    position: "Cashier",
-                    status: ["green", "green", "green", "green", "gray"],
-                  },
-                  {
-                    name: "Chris Reyes",
-                    position: "Staff",
-                    status: ["green", "green", "gray", "gray", "gray"],
-                  },
-                  {
-                    name: "Lara Santos",
-                    position: "Rider",
-                    status: ["green", "green", "green", "green", "green"],
-                  },
-                  {
-                    name: "Marco Tan",
-                    position: "Maintenance",
-                    status: ["gray", "green", "green", "yellow", "green"],
-                  },
-                  {
-                    name: "Ella Cruz",
-                    position: "Cashier",
-                    status: ["green", "gray", "green", "green", "green"],
-                  },
-                  {
-                    name: "Dino Rivas",
-                    position: "Staff",
-                    status: ["green", "green", "gray", "green", "green"],
-                  },
-                  {
-                    name: "Nina Valdez",
-                    position: "Rider",
-                    status: ["yellow", "gray", "green", "green", "green"],
-                  },
-                ].map((employee, index) => (
+                {employees.map((emp, index) => (
                   <tr
-                    key={index}
+                    key={emp.id}
                     className={`border-t transition-colors duration-200 hover:bg-gray-400 ${
                       index % 2 !== 0 ? "bg-gray-200" : "bg-white"
                     }`}
                   >
                     <td className="px-4 py-3 border-b">{index + 1}</td>
-                    <td className="px-6 py-3 border-b">{employee.name}</td>
-                    <td className="px-6 py-3 border-b">{employee.position}</td>
-                    {employee.status.map((color, i) => (
-                      <td key={i} className="px-2 py-3 border-b text-center">
+                    <td className="px-6 py-3 border-b">{emp.name}</td>
+                    <td className="px-6 py-3 border-b">{emp.position}</td>
+                    {emp.status.map((color, idx) => (
+                      <td key={idx} className="px-2 py-3 border-b text-center">
                         <span
                           className={`h-4 w-4 inline-block rounded-full ${
                             {
                               green: "bg-green-500",
-                              gray: "bg-red-500",
                               yellow: "bg-yellow-400",
+                              blue: "bg-blue-500",
+                              gray: "bg-red-500",
                             }[color]
                           }`}
-                          title={["Mon", "Tue", "Wed", "Thu", "Fri"][i]}
+                          title={color}
                         ></span>
                       </td>
                     ))}
