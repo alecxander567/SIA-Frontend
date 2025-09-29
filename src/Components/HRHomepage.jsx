@@ -16,16 +16,15 @@ function Homepage() {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState(0);
   const [hrName, setHrName] = useState({ firstName: "", lastName: "" });
-  const [attendance, setAttendance] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
   const [todayDate, setTodayDate] = useState(null);
   const [allEmployees, setAllEmployees] = useState([]);
-  const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [attendanceDate, setAttendanceDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
+  const [employeesWithAttendance, setEmployeesWithAttendance] = useState([]);
 
   const [stats, setStats] = useState([
     { label: "Total Users", value: 0, icon: Users, color: "text-blue-500" },
@@ -43,42 +42,91 @@ function Homepage() {
     { day: "Fri", Present: 70, Absent: 20 },
   ];
 
-  const employeesWithAttendance = allEmployees.map((emp) => {
-    const record = attendanceRecords.find((r) => r.id === emp.id);
-    return {
-      ...emp,
-      attendanceStatus: record?.attendanceStatus || "ABSENT",
-      timeIn: record?.timeIn || null,
-      timeOut: record?.timeOut || null,
-    };
-  });
-
+  // Fetch all employees (this gives us the complete employee list with current attendance status)
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
         const res = await axios.get("http://localhost:8080/api/users");
         setAllEmployees(res.data);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching employees:", err);
       }
     };
+
     fetchEmployees();
+    const interval = setInterval(fetchEmployees, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchAttendanceByDate = async (date) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/users/attendance?date=${date}`
-      );
-      setAttendanceRecords(res.data);
-    } catch (err) {
-      console.error("Error fetching attendance:", err);
-    }
-  };
-
+  // Process employees data for display (simplified - no separate attendanceRecords state)
   useEffect(() => {
-    fetchAttendanceByDate(attendanceDate);
-  }, []);
+    // Filter employees based on selected date or show all for current day
+    const today = new Date().toISOString().slice(0, 10);
+    const isToday = attendanceDate === today;
+
+    const processed = allEmployees.map((emp) => {
+      if (isToday) {
+        return {
+          ...emp,
+          attendanceStatus: emp.attendanceStatus || "ABSENT",
+        };
+      } else {
+        return {
+          ...emp,
+          attendanceStatus:
+            emp.attendanceDate === attendanceDate
+              ? emp.attendanceStatus
+              : "ABSENT",
+        };
+      }
+    });
+
+    setEmployeesWithAttendance(processed);
+  }, [allEmployees, attendanceDate]);
+
+  // Update stats based on current employee data
+  useEffect(() => {
+    const totalUsers = allEmployees.length;
+    const onTime = allEmployees.filter(
+      (u) => u.attendanceStatus === "ON_TIME"
+    ).length;
+    const late = allEmployees.filter(
+      (u) => u.attendanceStatus === "LATE"
+    ).length;
+    const excused = allEmployees.filter(
+      (u) => u.attendanceStatus === "EXCUSED"
+    ).length;
+    const absent = allEmployees.filter(
+      (u) => !u.attendanceStatus || u.attendanceStatus === "ABSENT"
+    ).length;
+
+    setStats([
+      {
+        label: "Total Users",
+        value: totalUsers,
+        icon: Users,
+        color: "text-blue-500",
+      },
+      {
+        label: "On Time",
+        value: onTime,
+        icon: Clock,
+        color: "text-green-500",
+      },
+      {
+        label: "Late",
+        value: late,
+        icon: Hourglass,
+        color: "text-yellow-500",
+      },
+      {
+        label: "Absent",
+        value: absent,
+        icon: XCircle,
+        color: "text-red-500",
+      },
+    ]);
+  }, [allEmployees]);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -109,94 +157,14 @@ function Homepage() {
     setTodayDate(currentDate);
   }, []);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/api/users");
-        const users = res.data;
-
-        const totalUsers = users.length;
-        const onTime = users.filter(
-          (u) => u.attendanceStatus === "ON_TIME"
-        ).length;
-        const late = users.filter((u) => u.attendanceStatus === "LATE").length;
-        const absent = users.filter((u) => !u.attendanceStatus).length;
-
-        setStats([
-          {
-            label: "Total Users",
-            value: totalUsers,
-            icon: Users,
-            color: "text-blue-500",
-          },
-          {
-            label: "On Time",
-            value: onTime,
-            icon: Clock,
-            color: "text-green-500",
-          },
-          {
-            label: "Late",
-            value: late,
-            icon: Hourglass,
-            color: "text-yellow-500",
-          },
-          {
-            label: "Absent",
-            value: absent,
-            icon: XCircle,
-            color: "text-red-500",
-          },
-        ]);
-      } catch (err) {
-        console.error("Failed to fetch users:", err);
-      }
-    };
-
-    fetchUsers();
-    const interval = setInterval(fetchUsers, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/api/users");
-        setAttendance(res.data);
-      } catch (err) {
-        console.error("Failed to fetch users:", err);
-      }
-    };
-
-    fetchAttendance();
-  }, []);
-
   const handleTimeIn = async () => {
     try {
       const res = await axios.post(
         `http://localhost:8080/api/users/${user.id}/attendance`
       );
 
-      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
-
-      setAlertMessage(
-        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
-      );
-
+      setAlertMessage(`Time In recorded successfully`);
       setAlertType("success");
-
-      setAttendance((prev) =>
-        prev.map((emp) =>
-          emp.id === user.id
-            ? {
-                ...emp,
-                timeIn: userAttendance.timeIn,
-                attendanceStatus: userAttendance.attendanceStatus,
-              }
-            : emp
-        )
-      );
-
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
       setAlertMessage(err.response?.data?.message || "Error recording Time In");
@@ -211,17 +179,8 @@ function Homepage() {
         `http://localhost:8080/api/users/${user.id}/timeout`
       );
 
-      const userAttendance = Array.isArray(res.data) ? res.data[0] : res.data;
-
-      setAlertMessage(`Time Out recorded: ${userAttendance.timeOut}`);
+      setAlertMessage(`Time Out recorded successfully`);
       setAlertType("success");
-
-      setAttendance((prev) =>
-        prev.map((emp) =>
-          emp.id === user.id ? { ...emp, timeOut: userAttendance.timeOut } : emp
-        )
-      );
-
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
       setAlertMessage(
@@ -238,12 +197,16 @@ function Homepage() {
         `http://localhost:8080/api/users/${userId}/excuse`
       );
 
-      const updatedUser = Array.isArray(res.data) ? res.data[0] : res.data;
-
-      setAttendance((prev) =>
+      setAllEmployees((prev) =>
         prev.map((emp) =>
           emp.id === userId
-            ? { ...emp, attendanceStatus: updatedUser.attendanceStatus }
+            ? {
+                ...emp,
+                attendanceStatus: "EXCUSED",
+                timeIn: null,
+                timeOut: null,
+                attendanceDate: null,
+              }
             : emp
         )
       );
@@ -252,6 +215,7 @@ function Homepage() {
       setAlertType("success");
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
+      console.error("Error in handleExcuse:", err);
       setAlertMessage(err.response?.data?.message || "Error excusing employee");
       setAlertType("error");
       setTimeout(() => setAlertMessage(""), 3000);
@@ -410,10 +374,7 @@ function Homepage() {
           <input
             type="date"
             value={attendanceDate}
-            onChange={(e) => {
-              setAttendanceDate(e.target.value);
-              fetchAttendanceByDate(e.target.value);
-            }}
+            onChange={(e) => setAttendanceDate(e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
