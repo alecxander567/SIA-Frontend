@@ -39,8 +39,6 @@ function ProfileManagement() {
 
   useEffect(() => {
     const fetchWeeklyAttendance = async () => {
-      new Date().toISOString().split("T")[0];
-
       const week = getWeekDates(selectedDate);
       setWeekDays(week);
 
@@ -50,15 +48,13 @@ function ProfileManagement() {
 
         const usersWithWeekStatus = allUsers.map((user) => {
           const statusArr = week.map((day) => {
-            const attendance = allUsers.find(
-              (u) => u.id === user.id && u.attendanceDate === day
-            );
+            if (user.attendanceDate === day) return user.attendanceStatus;
 
-            if (!attendance) return "gray"; // absent
-            if (attendance.attendanceStatus === "ON_TIME") return "green";
-            if (attendance.attendanceStatus === "LATE") return "yellow";
-            if (attendance.attendanceStatus === "EXCUSED") return "blue";
-            return "red";
+            const today = new Date().toISOString().split("T")[0];
+            if (user.attendanceStatus === "EXCUSED" && day === today)
+              return "EXCUSED";
+
+            return "ABSENT";
           });
 
           return {
@@ -76,6 +72,9 @@ function ProfileManagement() {
     };
 
     fetchWeeklyAttendance();
+
+    const interval = setInterval(fetchWeeklyAttendance, 5000); 
+    return () => clearInterval(interval);
   }, [selectedDate]);
 
   const formattedDate = selectedDate
@@ -262,18 +261,18 @@ function ProfileManagement() {
                     <td className="px-4 py-3 border-b">{index + 1}</td>
                     <td className="px-6 py-3 border-b">{emp.name}</td>
                     <td className="px-6 py-3 border-b">{emp.position}</td>
-                    {emp.status.map((color, idx) => (
+                    {emp.status.map((status, idx) => (
                       <td key={idx} className="px-2 py-3 border-b text-center">
                         <span
                           className={`h-4 w-4 inline-block rounded-full ${
                             {
-                              green: "bg-green-500",
-                              yellow: "bg-yellow-400",
-                              blue: "bg-blue-500",
-                              gray: "bg-red-500",
-                            }[color]
+                              ON_TIME: "bg-green-500",
+                              LATE: "bg-yellow-400",
+                              EXCUSED: "bg-blue-500", 
+                              ABSENT: "bg-red-500", 
+                            }[status] || "bg-gray-500"
                           }`}
-                          title={color}
+                          title={status}
                         ></span>
                       </td>
                     ))}
