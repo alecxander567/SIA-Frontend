@@ -64,7 +64,7 @@ function Dashboard() {
     setTimeInClicked(true);
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/users/${userId}/attendance`
+        `http://localhost:8080/api/users/timein/${userId}`
       );
       console.log("TimeIn Response:", res.data);
 
@@ -103,8 +103,9 @@ function Dashboard() {
     setTimeOutClicked(true);
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/users/${userId}/timeout`
+        `http://localhost:8080/api/users/timeout/${userId}`
       );
+
       console.log("TimeOut Response:", res.data);
 
       const { message, timeOut } = res.data;

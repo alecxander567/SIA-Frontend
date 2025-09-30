@@ -38,20 +38,18 @@ function RiderHomepage() {
   const handleTimeIn = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/users/${user.id}/attendance`
+        `http://localhost:8080/api/users/timein/${user.id}`
       );
 
-      const userAttendance = res.data; 
+      const { message, status, timeIn } = res.data;
 
-      setAlertMessage(
-        `Time In recorded: ${userAttendance.timeIn} (${userAttendance.status})`
-      );
+      setAlertMessage(`${message} - Time: ${timeIn} (${status})`);
       setAlertType("success");
 
       setAttendance((prev) => ({
         ...prev,
-        timeIn: userAttendance.timeIn,
-        attendanceStatus: userAttendance.status,
+        timeIn: timeIn,
+        attendanceStatus: status,
       }));
 
       setTimeout(() => setAlertMessage(""), 3000);
@@ -66,22 +64,22 @@ function RiderHomepage() {
   const handleTimeOut = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/users/${user.id}/timeout`
+        `http://localhost:8080/api/users/timeout/${user.id}`
       );
 
-      const userAttendance = res.data; 
+      const { message, timeOut } = res.data;
 
-      setAlertMessage(`Time Out recorded: ${userAttendance.timeOut}`);
+      setAlertMessage(`${message} - Time: ${timeOut}`);
       setAlertType("success");
 
       setAttendance((prev) => ({
         ...prev,
-        timeOut: userAttendance.timeOut,
+        timeOut: timeOut,
       }));
 
       setTimeout(() => setAlertMessage(""), 3000);
     } catch (err) {
-      console.error("Time Out error:", err); 
+      console.error("Time Out error:", err);
       setAlertMessage(
         err.response?.data?.message || "Error recording Time Out"
       );
@@ -193,7 +191,7 @@ function RiderHomepage() {
             <h1 className="text-2xl font-bold">N-Tech Hardware</h1>
           </div>
 
-          {/* Search - Fixed to connect to searchTerm state */}
+          {/* Search */}
           <div className="flex-1 flex justify-end mx-6">
             <div className="relative w-80">
               <input

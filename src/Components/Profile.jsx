@@ -43,27 +43,45 @@ function ProfileManagement() {
       setWeekDays(week);
 
       try {
-        const res = await axios.get(`http://localhost:8080/api/users`);
-        const allUsers = res.data;
+        const weeklyData = await Promise.all(
+          week.map(async (date) => {
+            const res = await axios.get(
+              `http://localhost:8080/api/attendance?date=${date}`
+            );
+            return { date, employees: res.data };
+          })
+        );
 
-        const usersWithWeekStatus = allUsers.map((user) => {
-          const statusArr = week.map((day) => {
-            if (user.attendanceDate === day) return user.attendanceStatus;
+        const employeeMap = new Map();
 
-            const today = new Date().toISOString().split("T")[0];
-            if (user.attendanceStatus === "EXCUSED" && day === today)
-              return "EXCUSED";
-
-            return "ABSENT";
+        weeklyData.forEach(({ date, employees }) => {
+          employees.forEach((emp) => {
+            if (!employeeMap.has(emp.id)) {
+              employeeMap.set(emp.id, {
+                id: emp.id,
+                name: `${emp.firstName} ${emp.lastName}`,
+                position: emp.position || "Staff",
+                statusByDate: {},
+              });
+            }
+            employeeMap.get(emp.id).statusByDate[date] = emp.attendanceStatus;
           });
-
-          return {
-            id: user.id,
-            name: `${user.firstName} ${user.lastName}`,
-            position: user.position || "Staff",
-            status: statusArr,
-          };
         });
+
+        const usersWithWeekStatus = Array.from(employeeMap.values()).map(
+          (user) => {
+            const statusArr = week.map((day) => {
+              return user.statusByDate[day] || "ABSENT";
+            });
+
+            return {
+              id: user.id,
+              name: user.name,
+              position: user.position,
+              status: statusArr,
+            };
+          }
+        );
 
         setEmployees(usersWithWeekStatus);
       } catch (error) {
@@ -73,7 +91,7 @@ function ProfileManagement() {
 
     fetchWeeklyAttendance();
 
-    const interval = setInterval(fetchWeeklyAttendance, 5000); 
+    const interval = setInterval(fetchWeeklyAttendance, 5000);
     return () => clearInterval(interval);
   }, [selectedDate]);
 
@@ -268,8 +286,8 @@ function ProfileManagement() {
                             {
                               ON_TIME: "bg-green-500",
                               LATE: "bg-yellow-400",
-                              EXCUSED: "bg-blue-500", 
-                              ABSENT: "bg-red-500", 
+                              EXCUSED: "bg-blue-500",
+                              ABSENT: "bg-red-500",
                             }[status] || "bg-gray-500"
                           }`}
                           title={status}

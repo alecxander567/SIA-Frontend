@@ -20,7 +20,6 @@ function Homepage() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
   const [todayDate, setTodayDate] = useState(null);
-  const [allEmployees, setAllEmployees] = useState([]);
   const [attendanceDate, setAttendanceDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -33,7 +32,6 @@ function Homepage() {
     { label: "Absent", value: 0, icon: XCircle, color: "text-red-500" },
   ]);
 
-  // Dummy weekly attendance chart
   const attendanceData = [
     { day: "Mon", Present: 80, Absent: 10 },
     { day: "Tue", Present: 75, Absent: 15 },
@@ -42,91 +40,66 @@ function Homepage() {
     { day: "Fri", Present: 70, Absent: 20 },
   ];
 
-  // Fetch all employees (this gives us the complete employee list with current attendance status)
   useEffect(() => {
-    const fetchEmployees = async () => {
+    const fetchEmployeesWithAttendance = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/users");
-        setAllEmployees(res.data);
+        const res = await axios.get(
+          `http://localhost:8080/api/attendance?date=${attendanceDate}`
+        );
+        setEmployeesWithAttendance(res.data);
+
+        const totalUsers = res.data.length;
+        const onTime = res.data.filter(
+          (u) => u.attendanceStatus === "ON_TIME"
+        ).length;
+        const late = res.data.filter(
+          (u) => u.attendanceStatus === "LATE"
+        ).length;
+        const excused = res.data.filter(
+          (u) => u.attendanceStatus === "EXCUSED"
+        ).length;
+        const absent = res.data.filter(
+          (u) => u.attendanceStatus === "ABSENT"
+        ).length;
+
+        setStats([
+          {
+            label: "Total Users",
+            value: totalUsers,
+            icon: Users,
+            color: "text-blue-500",
+          },
+          {
+            label: "On Time",
+            value: onTime,
+            icon: Clock,
+            color: "text-green-500",
+          },
+          {
+            label: "Late",
+            value: late,
+            icon: Hourglass,
+            color: "text-yellow-500",
+          },
+          {
+            label: "Absent",
+            value: absent,
+            icon: XCircle,
+            color: "text-red-500",
+          },
+        ]);
       } catch (err) {
-        console.error("Error fetching employees:", err);
+        console.error("Error fetching attendance:", err);
+        setAlertMessage("Error fetching attendance data");
+        setAlertType("error");
+        setTimeout(() => setAlertMessage(""), 3000);
       }
     };
 
-    fetchEmployees();
-    const interval = setInterval(fetchEmployees, 5000);
+    fetchEmployeesWithAttendance();
+    const interval = setInterval(fetchEmployeesWithAttendance, 5000);
     return () => clearInterval(interval);
-  }, []);
-
-  // Process employees data for display (simplified - no separate attendanceRecords state)
-  useEffect(() => {
-    // Filter employees based on selected date or show all for current day
-    const today = new Date().toISOString().slice(0, 10);
-    const isToday = attendanceDate === today;
-
-    const processed = allEmployees.map((emp) => {
-      if (isToday) {
-        return {
-          ...emp,
-          attendanceStatus: emp.attendanceStatus || "ABSENT",
-        };
-      } else {
-        return {
-          ...emp,
-          attendanceStatus:
-            emp.attendanceDate === attendanceDate
-              ? emp.attendanceStatus
-              : "ABSENT",
-        };
-      }
-    });
-
-    setEmployeesWithAttendance(processed);
-  }, [allEmployees, attendanceDate]);
-
-  // Update stats based on current employee data
-  useEffect(() => {
-    const totalUsers = allEmployees.length;
-    const onTime = allEmployees.filter(
-      (u) => u.attendanceStatus === "ON_TIME"
-    ).length;
-    const late = allEmployees.filter(
-      (u) => u.attendanceStatus === "LATE"
-    ).length;
-    const excused = allEmployees.filter(
-      (u) => u.attendanceStatus === "EXCUSED"
-    ).length;
-    const absent = allEmployees.filter(
-      (u) => !u.attendanceStatus || u.attendanceStatus === "ABSENT"
-    ).length;
-
-    setStats([
-      {
-        label: "Total Users",
-        value: totalUsers,
-        icon: Users,
-        color: "text-blue-500",
-      },
-      {
-        label: "On Time",
-        value: onTime,
-        icon: Clock,
-        color: "text-green-500",
-      },
-      {
-        label: "Late",
-        value: late,
-        icon: Hourglass,
-        color: "text-yellow-500",
-      },
-      {
-        label: "Absent",
-        value: absent,
-        icon: XCircle,
-        color: "text-red-500",
-      },
-    ]);
-  }, [allEmployees]);
+  }, [attendanceDate]);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -160,14 +133,24 @@ function Homepage() {
   const handleTimeIn = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/users/${user.id}/attendance`
+        `http://localhost:8080/api/users/timein/${user.id}`
       );
 
-      setAlertMessage(`Time In recorded successfully`);
+      const { message, status, timeIn } = res.data;
+
+      setAlertMessage(`${message} - Time: ${timeIn} (${status})`);
       setAlertType("success");
       setTimeout(() => setAlertMessage(""), 3000);
+
+      const refreshRes = await axios.get(
+        `http://localhost:8080/api/attendance?date=${attendanceDate}`
+      );
+      setEmployeesWithAttendance(refreshRes.data);
     } catch (err) {
-      setAlertMessage(err.response?.data?.message || "Error recording Time In");
+      console.error("Time In Error:", err);
+      setAlertMessage(
+        err.response?.data?.message || "Failed to record Time In"
+      );
       setAlertType("error");
       setTimeout(() => setAlertMessage(""), 3000);
     }
@@ -176,15 +159,23 @@ function Homepage() {
   const handleTimeOut = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/users/${user.id}/timeout`
+        `http://localhost:8080/api/users/timeout/${user.id}`
       );
 
-      setAlertMessage(`Time Out recorded successfully`);
+      const { message, timeOut } = res.data;
+
+      setAlertMessage(`${message} - Time: ${timeOut}`);
       setAlertType("success");
       setTimeout(() => setAlertMessage(""), 3000);
+
+      const refreshRes = await axios.get(
+        `http://localhost:8080/api/attendance?date=${attendanceDate}`
+      );
+      setEmployeesWithAttendance(refreshRes.data);
     } catch (err) {
+      console.error("Time Out Error:", err);
       setAlertMessage(
-        err.response?.data?.message || "Error recording Time Out"
+        err.response?.data?.message || "Failed to record Time Out"
       );
       setAlertType("error");
       setTimeout(() => setAlertMessage(""), 3000);
@@ -197,23 +188,14 @@ function Homepage() {
         `http://localhost:8080/api/users/${userId}/excuse`
       );
 
-      setAllEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === userId
-            ? {
-                ...emp,
-                attendanceStatus: "EXCUSED",
-                timeIn: null,
-                timeOut: null,
-                attendanceDate: null,
-              }
-            : emp
-        )
-      );
-
       setAlertMessage(`Employee excused successfully`);
       setAlertType("success");
       setTimeout(() => setAlertMessage(""), 3000);
+
+      const refreshRes = await axios.get(
+        `http://localhost:8080/api/attendance?date=${attendanceDate}`
+      );
+      setEmployeesWithAttendance(refreshRes.data);
     } catch (err) {
       console.error("Error in handleExcuse:", err);
       setAlertMessage(err.response?.data?.message || "Error excusing employee");
@@ -298,36 +280,34 @@ function Homepage() {
 
         {/* Calendar */}
         <div className="p-5 bg-white shadow-lg rounded-2xl">
-          <div className="p-5 bg-white shadow-lg rounded-2xl">
-            <h2 className="text-lg font-semibold mb-2">
-              {month} {year}
-            </h2>
-            {/* Day headers */}
-            <div className="grid grid-cols-7 gap-2 mb-2 text-gray-500 font-medium text-sm">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="text-center">
-                  {day}
-                </div>
-              ))}
-            </div>
+          <h2 className="text-lg font-semibold mb-2">
+            {month} {year}
+          </h2>
+          {/* Day headers */}
+          <div className="grid grid-cols-7 gap-2 mb-2 text-gray-500 font-medium text-sm">
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+              <div key={day} className="text-center">
+                {day}
+              </div>
+            ))}
+          </div>
 
-            {/* Days */}
-            <div className="grid grid-cols-7 gap-2">
-              {days.map((day, index) => {
-                const isToday = day === todayDate;
-                return (
-                  <div
-                    key={index}
-                    className={`p-3 text-center rounded-lg cursor-pointer transition
-            ${day ? "bg-blue-50 text-blue-700 hover:bg-blue-200" : ""}
-            ${isToday ? "bg-blue-500 text-white hover:bg-blue-600" : ""}
-          `}
-                  >
-                    {day || ""}
-                  </div>
-                );
-              })}
-            </div>
+          {/* Days */}
+          <div className="grid grid-cols-7 gap-2">
+            {days.map((day, index) => {
+              const isToday = day === todayDate;
+              return (
+                <div
+                  key={index}
+                  className={`p-3 text-center rounded-lg cursor-pointer transition
+                    ${day ? "bg-blue-50 text-blue-700 hover:bg-blue-200" : ""}
+                    ${isToday ? "bg-blue-500 text-white hover:bg-blue-600" : ""}
+                  `}
+                >
+                  {day || ""}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -354,7 +334,7 @@ function Homepage() {
 
               <linearGradient id="grayGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#A3A3A3" />
-                <stop offset="100%" stopColor="#6B7280" />{" "}
+                <stop offset="100%" stopColor="#6B7280" />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
