@@ -7,6 +7,8 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
+  FaVenusMars,
+  FaPhone,
 } from "react-icons/fa";
 import axios from "axios";
 
@@ -155,7 +157,8 @@ function Register() {
           {/* Sex and Contact Number */}
           <div className="flex gap-4">
             <div className="w-1/2">
-              <label className="block text-sm font-medium mb-1 text-black">
+              <label className="flex items-center text-sm font-medium mb-1 text-black gap-2">
+                <FaVenusMars className="text-black-600" />
                 Sex
               </label>
               <select
@@ -171,8 +174,10 @@ function Register() {
               </select>
             </div>
 
+            {/* Contact Number Field */}
             <div className="w-1/2">
-              <label className="block text-sm font-medium mb-1 text-black">
+              <label className="flex items-center text-sm font-medium mb-1 text-black gap-2">
+                <FaPhone className="text-black-600" />
                 Contact Number
               </label>
               <input
