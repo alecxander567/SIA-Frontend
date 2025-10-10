@@ -24,6 +24,7 @@ function Homepage() {
     new Date().toISOString().slice(0, 10)
   );
   const [employeesWithAttendance, setEmployeesWithAttendance] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
 
   const [stats, setStats] = useState([
     { label: "Total Users", value: 0, icon: Users, color: "text-blue-500" },
@@ -32,13 +33,43 @@ function Homepage() {
     { label: "Absent", value: 0, icon: XCircle, color: "text-red-500" },
   ]);
 
-  const attendanceData = [
-    { day: "Mon", Present: 80, Absent: 10 },
-    { day: "Tue", Present: 75, Absent: 15 },
-    { day: "Wed", Present: 90, Absent: 5 },
-    { day: "Thu", Present: 85, Absent: 10 },
-    { day: "Fri", Present: 70, Absent: 20 },
-  ];
+  const [selectedType, setSelectedType] = useState("OnTime");
+
+  const gradientMap = {
+    OnTime: "url(#onTimeGradient)",
+    Late: "url(#lateGradient)",
+    Absent: "url(#absentGradient)",
+  };
+
+  useEffect(() => {
+    axios
+      .get("https://tidy-steaks-film.loca.lt/attendance")
+      .then((response) => {
+        const rawData = response.data;
+
+        const summary = {};
+        rawData.forEach(({ name, status }) => {
+          if (!summary[name]) {
+            summary[name] = {
+              user: name,
+              fullName: name,
+              OnTime: 0,
+              Late: 0,
+              Absent: 0,
+            };
+          }
+
+          if (status === "ON_TIME") summary[name].OnTime += 1;
+          else if (status === "LATE") summary[name].Late += 1;
+          else if (status === "ABSENT") summary[name].Absent += 1;
+        });
+
+        setAttendanceData(Object.values(summary));
+      })
+      .catch((error) =>
+        console.error("Error fetching attendance data:", error)
+      );
+  }, []);
 
   useEffect(() => {
     const fetchEmployeesWithAttendance = async () => {
@@ -218,15 +249,13 @@ function Homepage() {
         <div className="flex gap-3">
           <button
             onClick={handleTimeIn}
-            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white transition"
-          >
+            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white transition">
             Time In
           </button>
 
           <button
             onClick={handleTimeOut}
-            className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition"
-          >
+            className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition">
             Time Out
           </button>
 
@@ -237,8 +266,7 @@ function Homepage() {
                   alertType === "success"
                     ? "bg-green-100 text-green-800"
                     : "bg-red-100 text-red-800"
-                }`}
-              >
+                }`}>
                 {alertMessage}
               </div>
             </div>
@@ -249,23 +277,20 @@ function Homepage() {
               localStorage.removeItem("user");
               window.location.href = "http://localhost:5173";
             }}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white transition"
-          >
+            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white transition">
             Logout
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <div
                 key={index}
-                className="flex items-center gap-4 p-5 bg-white shadow-lg rounded-xl transition-transform hover:scale-105"
-              >
+                className="flex items-center gap-4 p-5 bg-white shadow-lg rounded-xl transition-transform hover:scale-105">
                 <Icon className={`w-12 h-12 ${stat.color}`} />
                 <div>
                   <p className="text-gray-500 text-base font-medium">
@@ -278,12 +303,10 @@ function Homepage() {
           })}
         </div>
 
-        {/* Calendar */}
         <div className="p-5 bg-white shadow-lg rounded-2xl">
           <h2 className="text-lg font-semibold mb-2">
             {month} {year}
           </h2>
-          {/* Day headers */}
           <div className="grid grid-cols-7 gap-2 mb-2 text-gray-500 font-medium text-sm">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
               <div key={day} className="text-center">
@@ -291,8 +314,6 @@ function Homepage() {
               </div>
             ))}
           </div>
-
-          {/* Days */}
           <div className="grid grid-cols-7 gap-2">
             {days.map((day, index) => {
               const isToday = day === todayDate;
@@ -302,8 +323,7 @@ function Homepage() {
                   className={`p-3 text-center rounded-lg cursor-pointer transition
                     ${day ? "bg-blue-50 text-blue-700 hover:bg-blue-200" : ""}
                     ${isToday ? "bg-blue-500 text-white hover:bg-blue-600" : ""}
-                  `}
-                >
+                  `}>
                   {day || ""}
                 </div>
               );
@@ -312,42 +332,59 @@ function Homepage() {
         </div>
       </div>
 
-      {/* Attendance Bar Chart */}
       <div className="bg-white shadow rounded-2xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Weekly Attendance</h2>
+        <h2 className="text-lg font-semibold mb-4">Attendance by User</h2>
+
+        <div className="mb-4">
+          <select
+            className="border rounded p-2"
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}>
+            <option value="OnTime">On Time</option>
+            <option value="Late">Late</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
             data={attendanceData}
-            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
-          >
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <defs>
-              <linearGradient
-                id="redOrangeGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="0%" stopColor="#FF4500" />
-                <stop offset="100%" stopColor="#FFA500" />
+              <linearGradient id="onTimeGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#4ade80" />
+                <stop offset="100%" stopColor="#22c55e" />
               </linearGradient>
-
-              <linearGradient id="grayGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#A3A3A3" />
-                <stop offset="100%" stopColor="#6B7280" />
+              <linearGradient id="lateGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#facc15" />
+                <stop offset="100%" stopColor="#eab308" />
+              </linearGradient>
+              <linearGradient id="absentGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#f87171" />
+                <stop offset="100%" stopColor="#ef4444" />
               </linearGradient>
             </defs>
+
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="day" />
+            <XAxis
+              dataKey="user"
+              tickFormatter={(name) =>
+                name.length > 10 ? name.slice(0, 10) + "..." : name
+              }
+            />
             <YAxis />
-            <Tooltip />
-            <Bar dataKey="Present" fill="url(#redOrangeGradient)" />
-            <Bar dataKey="Absent" fill="url(#grayGradient)" />
+            <Tooltip
+              formatter={(value, name, props) => [
+                value,
+                props.payload.fullName,
+              ]}
+              labelFormatter={(label) => label}
+            />
+            <Bar dataKey={selectedType} fill={gradientMap[selectedType]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Employee Table */}
       <div className="bg-white shadow-lg rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Employee Attendance</h2>
@@ -367,8 +404,7 @@ function Homepage() {
                   (header) => (
                     <th
                       key={header}
-                      className="text-left p-3 text-white uppercase text-sm tracking-wider"
-                    >
+                      className="text-left p-3 text-white uppercase text-sm tracking-wider">
                       {header}
                     </th>
                   )
@@ -407,8 +443,7 @@ function Homepage() {
                     key={emp.id}
                     className={`${
                       idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } transition hover:bg-gray-100`}
-                  >
+                    } transition hover:bg-gray-100`}>
                     <td className="p-3 text-gray-700">{idx + 1}</td>
                     <td className="p-3 font-medium text-gray-800">
                       {emp.firstName} {emp.lastName}
@@ -416,16 +451,14 @@ function Homepage() {
                     <td className="p-3 text-gray-600">{emp.position}</td>
                     <td className="p-3">
                       <span
-                        className={`px-3 py-1 text-sm font-semibold ${statusBg} ${statusText} rounded-full shadow-sm min-w-[60px] text-center inline-block`}
-                      >
+                        className={`px-3 py-1 text-sm font-semibold ${statusBg} ${statusText} rounded-full shadow-sm min-w-[60px] text-center inline-block`}>
                         {status}
                       </span>
                     </td>
                     <td className="p-3">
                       <button
                         className="px-4 py-2 bg-yellow-600 text-white text-base font-medium rounded hover:bg-yellow-800 transition whitespace-nowrap"
-                        onClick={() => handleExcuse(emp.id)}
-                      >
+                        onClick={() => handleExcuse(emp.id)}>
                         Excuse
                       </button>
                     </td>
