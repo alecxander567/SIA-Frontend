@@ -32,7 +32,6 @@ function Notifications() {
       })
     : "All Date";
 
-  // Fetch orders from backend
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -44,11 +43,10 @@ function Notifications() {
     };
 
     fetchOrders();
-    const interval = setInterval(fetchOrders, 5000); // refresh every 5 seconds
+    const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // Filter orders for display
   const visibleOrders = orders.filter((order) => {
     const matchesSearch =
       order.orderName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,13 +54,11 @@ function Notifications() {
 
     const matchesDate = !selectedDate || order.order_date === selectedDate;
 
-    // Only show Delivered orders
     const matchesStatus = order.status === "Delivered";
 
     return matchesSearch && matchesDate && matchesStatus;
   });
 
-  // Count for notification badge (delivered orders for selected date)
   const deliveredCount = orders.filter(
     (order) =>
       order.status === "Delivered" &&
@@ -81,14 +77,12 @@ function Notifications() {
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
-      {/* Sidebar toggle (mobile) */}
       <button
         className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
         onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
@@ -150,9 +144,7 @@ function Notifications() {
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 bg-gray-800 text-white overflow-y-auto min-h-screen">
-        {/* Header */}
         <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
           <h1 className="text-lg font-semibold">Notifications</h1>
           <div className="relative w-80">
@@ -167,7 +159,6 @@ function Notifications() {
           </div>
         </header>
 
-        {/* Date Picker */}
         <div className="px-10 py-4 flex justify-end">
           <div className="relative">
             <button
@@ -197,7 +188,6 @@ function Notifications() {
                 <div
                   key={order.orderId}
                   className="flex flex-col gap-3 px-6 py-4 border-b last:border-b-0 hover:bg-gray-50 transition shadow-sm rounded-lg">
-                  {/* Top row: Order Name and Status */}
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <FaBox className="text-blue-500" />
@@ -220,13 +210,11 @@ function Notifications() {
                     </span>
                   </div>
 
-                  {/* Customer */}
                   <div className="flex items-center gap-2 text-gray-600">
                     <FaUser className="text-purple-500" />
                     <span>{order.customer_name}</span>
                   </div>
 
-                  {/* Price & Quantity */}
                   <div className="flex items-center gap-6 text-gray-700 text-sm">
                     <span className="flex items-center gap-1">
                       <FaDollarSign className="text-green-500" /> $
