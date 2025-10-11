@@ -108,16 +108,14 @@ function Orders() {
     <div className="flex h-screen bg-gray-900 text-white">
       <button
         className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+        onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex`}
-      >
+        } md:translate-x-0 md:static md:flex`}>
         <div>
           <div className="mb-4">
             <img
@@ -133,32 +131,34 @@ function Orders() {
           <nav className="space-y-4 text-white">
             <Link
               to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaTachometerAlt /> Dashboard
             </Link>
             <Link
               to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaBox /> Inventory
             </Link>
             <Link
               to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
-              <FaClipboardList /> Orders ({orderCount})
+              className="flex items-center justify-between hover:bg-gray-700 px-3 py-2 rounded">
+              <div className="flex items-center gap-3">
+                <FaClipboardList /> Orders
+              </div>
+              {orderCount > 0 && (
+                <span className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                  {orderCount}
+                </span>
+              )}
             </Link>
             <Link
               to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaBell /> Notifications
             </Link>
             <Link
               to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaUser /> Profile Management
             </Link>
           </nav>
@@ -167,8 +167,7 @@ function Orders() {
         <div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white"
-          >
+            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white">
             <FaSignOutAlt /> Logout
           </button>
         </div>
@@ -198,8 +197,7 @@ function Orders() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border border-white text-white bg-transparent px-4 py-2 pr-10 rounded-full hover:bg-white hover:text-black transition cursor-pointer appearance-none w-full"
-            >
+              className="border border-white text-white bg-transparent px-4 py-2 pr-10 rounded-full hover:bg-white hover:text-black transition cursor-pointer appearance-none w-full">
               <option value="All" className="text-black">
                 All
               </option>
@@ -226,8 +224,7 @@ function Orders() {
                 const input = document.getElementById("real-date-input");
                 if (input) input.showPicker?.();
                 input?.focus();
-              }}
-            >
+              }}>
               <FaCalendarAlt />
               {formattedDate}
             </button>
@@ -262,8 +259,7 @@ function Orders() {
                   key={index}
                   className={`grid grid-cols-9 items-center text-sm transition duration-200 ${
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } hover:bg-gray-800 hover:text-white`}
-                >
+                  } hover:bg-gray-800 hover:text-white`}>
                   {/* Instead of order.orderNo, show index + 1 */}
                   <div className="p-3 text-center">{index + 1}</div>
                   <div className="p-3 text-center truncate">{order.item}</div>
@@ -300,8 +296,7 @@ function Orders() {
               ? "bg-blue-500 text-white"
               : ""
           }
-        `}
-                    >
+        `}>
                       {order.status}
                     </span>
                   </div>

@@ -2,28 +2,27 @@ import {
   FaTachometerAlt,
   FaBox,
   FaClipboardList,
-  FaChartBar,
   FaBell,
   FaSignOutAlt,
   FaSearch,
-  FaCog,
   FaBars,
   FaTimes,
-  FaUser,
   FaCalendarAlt,
+  FaUser,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaDollarSign,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Notifications() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState(null);
-
+  const [orders, setOrders] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const formattedDate = selectedDate
     ? new Date(selectedDate).toLocaleDateString("en-US", {
@@ -33,111 +32,42 @@ function Notifications() {
       })
     : "All Date";
 
-  const notifications = [
-    {
-      id: 1,
-      sender: "Jane Doe",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-      datetime: "July 28, 2025 • 10:30 AM",
-      date: "2025-07-28",
-      message:
-        "Hey! Just checking in regarding the latest updates on the project.",
-      unread: true,
-    },
-    {
-      id: 2,
-      sender: "John Smith",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-      datetime: "July 27, 2025 • 3:45 PM",
-      date: "2025-07-27",
-      message:
-        "Don't forget about tomorrow's meeting. Please bring the report.",
-      unread: false,
-    },
-    {
-      id: 3,
-      sender: "Emily Johnson",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-      datetime: "July 26, 2025 • 9:00 AM",
-      date: "2025-07-26",
-      message:
-        "The design mockups have been updated. Please review the changes.",
-      unread: true,
-    },
-    {
-      id: 4,
-      sender: "Michael Brown",
-      avatar: "https://randomuser.me/api/portraits/men/45.jpg",
-      datetime: "July 25, 2025 • 11:15 AM",
-      date: "2025-07-25",
-      message: "We need to reschedule the team sync-up to next week.",
-      unread: false,
-    },
-    {
-      id: 5,
-      sender: "Sarah Williams",
-      avatar: "https://randomuser.me/api/portraits/women/12.jpg",
-      datetime: "July 24, 2025 • 2:30 PM",
-      date: "2025-07-24",
-      message: "Kindly complete the feedback form before Friday.",
-      unread: true,
-    },
-    {
-      id: 6,
-      sender: "David Lee",
-      avatar: "https://randomuser.me/api/portraits/men/29.jpg",
-      datetime: "July 23, 2025 • 4:20 PM",
-      date: "2025-07-23",
-      message:
-        "I've shared the updated spreadsheet. Let me know your thoughts.",
-      unread: false,
-    },
-    {
-      id: 7,
-      sender: "Olivia Martinez",
-      avatar: "https://randomuser.me/api/portraits/women/58.jpg",
-      datetime: "July 22, 2025 • 8:10 AM",
-      date: "2025-07-22",
-      message: "Are we still on for the brainstorming session later today?",
-      unread: true,
-    },
-    {
-      id: 8,
-      sender: "Daniel Garcia",
-      avatar: "https://randomuser.me/api/portraits/men/61.jpg",
-      datetime: "July 21, 2025 • 6:50 PM",
-      date: "2025-07-21",
-      message:
-        "The bug you reported has been fixed. Please verify on your end.",
-      unread: false,
-    },
-    {
-      id: 9,
-      sender: "Sophia Robinson",
-      avatar: "https://randomuser.me/api/portraits/women/33.jpg",
-      datetime: "July 20, 2025 • 1:00 PM",
-      date: "2025-07-20",
-      message: "Let’s meet tomorrow to finalize the feature list.",
-      unread: true,
-    },
-    {
-      id: 10,
-      sender: "Chris Evans",
-      avatar: "https://randomuser.me/api/portraits/men/70.jpg",
-      datetime: "July 19, 2025 • 5:25 PM",
-      date: "2025-07-19",
-      message: "Reminder: Team building event this weekend. Hope you can join!",
-      unread: false,
-    },
-  ];
+  // Fetch orders from backend
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/orders");
+        setOrders(response.data);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
 
-  const visibleNotifications = notifications.filter((notif) => {
-    const matchesDate = selectedDate === "" || notif.date === selectedDate;
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 5000); // refresh every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  // Filter orders for display
+  const visibleOrders = orders.filter((order) => {
     const matchesSearch =
-      notif.sender.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      notif.message.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesDate && matchesSearch;
+      order.orderName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customer_name.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesDate = !selectedDate || order.order_date === selectedDate;
+
+    // Only show Delivered orders
+    const matchesStatus = order.status === "Delivered";
+
+    return matchesSearch && matchesDate && matchesStatus;
   });
+
+  // Count for notification badge (delivered orders for selected date)
+  const deliveredCount = orders.filter(
+    (order) =>
+      order.status === "Delivered" &&
+      (!selectedDate || order.order_date === selectedDate)
+  ).length;
 
   const handleLogout = async () => {
     try {
@@ -151,18 +81,18 @@ function Notifications() {
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
+      {/* Sidebar toggle (mobile) */}
       <button
         className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+        onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
+      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex`}
-      >
+        } md:translate-x-0 md:static md:flex`}>
         <div>
           <div className="mb-4">
             <img
@@ -178,32 +108,34 @@ function Notifications() {
           <nav className="space-y-4 text-white">
             <Link
               to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaTachometerAlt /> Dashboard
             </Link>
             <Link
               to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaBox /> Inventory
             </Link>
             <Link
               to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaClipboardList /> Orders
             </Link>
             <Link
               to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
-              <FaBell /> Notifications
+              className="flex items-center justify-between hover:bg-gray-700 px-3 py-2 rounded">
+              <div className="flex items-center gap-3">
+                <FaBell /> Notifications
+              </div>
+              {deliveredCount > 0 && (
+                <span className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                  {deliveredCount}
+                </span>
+              )}
             </Link>
             <Link
               to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaUser /> Profile Management
             </Link>
           </nav>
@@ -212,17 +144,17 @@ function Notifications() {
         <div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white"
-          >
+            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white">
             <FaSignOutAlt /> Logout
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 bg-gray-500 text-black overflow-y-auto min-h-screen">
+      {/* Main content */}
+      <main className="flex-1 bg-gray-800 text-white overflow-y-auto min-h-screen">
         {/* Header */}
         <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
-          <h1 className="text-lg">Notifications</h1>
+          <h1 className="text-lg font-semibold">Notifications</h1>
           <div className="relative w-80">
             <input
               type="text"
@@ -244,8 +176,7 @@ function Notifications() {
                 const input = document.getElementById("real-date-input");
                 if (input) input.showPicker?.();
                 input?.focus();
-              }}
-            >
+              }}>
               <FaCalendarAlt />
               {formattedDate}
             </button>
@@ -259,109 +190,62 @@ function Notifications() {
           </div>
         </div>
 
-        {/* Notifications */}
         <div className="px-8 py-6">
-          <div className="bg-white rounded-lg divide-y divide-gray-200 shadow">
-            {visibleNotifications.length > 0 ? (
-              visibleNotifications.map((notif) => (
+          <div className="bg-white rounded-lg divide-y divide-gray-200 shadow text-black">
+            {visibleOrders.length > 0 ? (
+              visibleOrders.map((order) => (
                 <div
-                  key={notif.id}
-                  className="flex gap-4 px-10 py-8 items-start relative"
-                >
-                  <img
-                    src={notif.avatar}
-                    alt={notif.sender}
-                    className="w-10 h-10 rounded-full object-cover mt-1"
-                  />
-                  <div className="flex-1 flex flex-col">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-2">
-                        <h2 className="font-semibold text-base text-black">
-                          {notif.sender}
-                        </h2>
-                        <span className="text-sm text-gray-500">
-                          {notif.datetime}
-                        </span>
-                        {notif.unread && (
-                          <span className="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
-                        )}
-                      </div>
+                  key={order.orderId}
+                  className="flex flex-col gap-3 px-6 py-4 border-b last:border-b-0 hover:bg-gray-50 transition shadow-sm rounded-lg">
+                  {/* Top row: Order Name and Status */}
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <FaBox className="text-blue-500" />
+                      <h2 className="font-semibold text-lg">
+                        {order.orderName}
+                      </h2>
                     </div>
-                    <p className="text-sm text-gray-700 mt-2">
-                      {notif.message}
-                    </p>
-                    <div className="flex justify-end gap-4 mt-4">
-                      <button
-                        onClick={() => {
-                          setSelectedNotification(notif);
-                          setShowModal(true);
-                        }}
-                        className="text-sm text-blue-600 hover:underline"
-                      >
-                        Open
-                      </button>
+                    <span
+                      className={`flex items-center gap-1 font-semibold ${
+                        order.status === "Delivered"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}>
+                      {order.status === "Delivered" ? (
+                        <FaCheckCircle className="text-green-600" />
+                      ) : (
+                        <FaTimesCircle className="text-red-600" />
+                      )}
+                      {order.status}
+                    </span>
+                  </div>
 
-                      <button
-                        onClick={() => {
-                          const updated = notifications.map((n) =>
-                            n.id === notif.id ? { ...n, unread: false } : n
-                          );
-                          setNotifications(updated);
-                        }}
-                        className="text-sm text-green-600 hover:underline"
-                      >
-                        Mark as Read
-                      </button>
-                    </div>
+                  {/* Customer */}
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <FaUser className="text-purple-500" />
+                    <span>{order.customer_name}</span>
+                  </div>
+
+                  {/* Price & Quantity */}
+                  <div className="flex items-center gap-6 text-gray-700 text-sm">
+                    <span className="flex items-center gap-1">
+                      <FaDollarSign className="text-green-500" /> $
+                      {order.total_price}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <FaBox className="text-yellow-500" /> Qty:{" "}
+                      {order.quantity}
+                    </span>
                   </div>
                 </div>
               ))
             ) : (
               <div className="text-center py-6 text-gray-500">
-                No notifications found.
+                No delivered orders found.
               </div>
             )}
           </div>
         </div>
-
-        {showModal && selectedNotification && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm pointer-events-none">
-            <div className="bg-white p-8 rounded-2xl w-[400px] shadow-2xl relative space-y-6 pointer-events-auto">
-              {/* Close Button */}
-              <button
-                onClick={() => setShowModal(false)}
-                className="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl"
-              >
-                &times;
-              </button>
-
-              {/* Sender Profile Section */}
-              <div className="flex items-center gap-4">
-                <img
-                  src={
-                    selectedNotification.avatar ||
-                    "https://via.placeholder.com/50"
-                  }
-                  alt="Sender"
-                  className="w-14 h-14 rounded-full object-cover border"
-                />
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    {selectedNotification.sender}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    {selectedNotification.datetime}
-                  </p>
-                </div>
-              </div>
-
-              {/* Message Content */}
-              <div className="text-gray-700 text-base leading-relaxed">
-                {selectedNotification.message}
-              </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );

@@ -117,16 +117,14 @@ function ProfileManagement() {
     <div className="flex h-screen bg-gray-900 text-white">
       <button
         className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+        onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex`}
-      >
+        } md:translate-x-0 md:static md:flex`}>
         <div>
           <div className="mb-4">
             <img
@@ -142,32 +140,27 @@ function ProfileManagement() {
           <nav className="space-y-4 text-white">
             <Link
               to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaTachometerAlt /> Dashboard
             </Link>
             <Link
               to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaBox /> Inventory
             </Link>
             <Link
               to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaClipboardList /> Orders
             </Link>
             <Link
               to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaBell /> Notifications
             </Link>
             <Link
               to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
               <FaUser /> Profile Management
             </Link>
           </nav>
@@ -176,8 +169,7 @@ function ProfileManagement() {
         <div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white"
-          >
+            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white">
             <FaSignOutAlt /> Logout
           </button>
         </div>
@@ -207,8 +199,7 @@ function ProfileManagement() {
                   const input = document.getElementById("real-date-input");
                   if (input) input.showPicker?.();
                   input?.focus();
-                }}
-              >
+                }}>
                 <FaCalendarAlt />
                 {formattedDate}
               </button>
@@ -259,8 +250,7 @@ function ProfileManagement() {
                   {weekDays.map((day) => (
                     <th
                       key={day}
-                      className="px-4 py-3 border-b text-center font-bold"
-                    >
+                      className="px-4 py-3 border-b text-center font-bold">
                       {new Date(day).toLocaleDateString("en-US", {
                         weekday: "short",
                       })}
@@ -274,8 +264,7 @@ function ProfileManagement() {
                     key={emp.id}
                     className={`border-t transition-colors duration-200 hover:bg-gray-400 ${
                       index % 2 !== 0 ? "bg-gray-200" : "bg-white"
-                    }`}
-                  >
+                    }`}>
                     <td className="px-4 py-3 border-b">{index + 1}</td>
                     <td className="px-6 py-3 border-b">{emp.name}</td>
                     <td className="px-6 py-3 border-b">{emp.position}</td>
@@ -290,8 +279,7 @@ function ProfileManagement() {
                               ABSENT: "bg-red-500",
                             }[status] || "bg-gray-500"
                           }`}
-                          title={status}
-                        ></span>
+                          title={status}></span>
                       </td>
                     ))}
                   </tr>
