@@ -141,7 +141,7 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://every-zoos-judge.loca.lt/Sales-Overview")
+      .get("https://sharp-candies-hang.loca.lt/Sales-Overview")
       .then((res) => {
         console.log("API Data:", res.data);
 
@@ -161,7 +161,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://every-zoos-judge.loca.lt/");
+        const res = await axios.get("https://sharp-candies-hang.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -249,7 +249,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("https://every-zoos-judge.loca.lt/profitexpenses")
+    fetch("https://sharp-candies-hang.loca.lt/profitexpenses")
       .then((res) => res.json())
       .then((data) => {
         const combinedData = data.months.map((month, index) => ({

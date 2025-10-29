@@ -39,31 +39,52 @@ function Homepage() {
     OnTime: "url(#onTimeGradient)",
     Late: "url(#lateGradient)",
     Absent: "url(#absentGradient)",
+    Excused: "url(#excusedGradient)",
   };
 
   useEffect(() => {
     axios
-      .get("https://tidy-steaks-film.loca.lt/attendance")
+      .get("https://sharp-candies-hang.loca.lt/attendance")
       .then((response) => {
         const rawData = response.data;
-
         const summary = {};
-        rawData.forEach(({ name, status }) => {
-          if (!summary[name]) {
-            summary[name] = {
-              user: name,
-              fullName: name,
+
+        // Flatten the nested structure
+        rawData.forEach((user) => {
+          const userName = user.name;
+
+          if (!summary[userName]) {
+            summary[userName] = {
+              user: userName,
+              fullName: userName,
               OnTime: 0,
               Late: 0,
               Absent: 0,
+              Excused: 0,
             };
           }
 
-          if (status === "ON_TIME") summary[name].OnTime += 1;
-          else if (status === "LATE") summary[name].Late += 1;
-          else if (status === "ABSENT") summary[name].Absent += 1;
+          // Loop through each user's attendance array
+          user.attendance.forEach((record) => {
+            const status = record.status.toUpperCase(); // Convert to uppercase
+
+            if (
+              status === "ON TIME" ||
+              status === "ONTIME" ||
+              status === "ON_TIME"
+            ) {
+              summary[userName].OnTime += 1;
+            } else if (status === "LATE") {
+              summary[userName].Late += 1;
+            } else if (status === "ABSENT") {
+              summary[userName].Absent += 1;
+            } else if (status === "EXCUSED") {
+              summary[userName].Excused += 1;
+            }
+          });
         });
 
+        console.log("Processed attendance data:", Object.values(summary)); // Debug
         setAttendanceData(Object.values(summary));
       })
       .catch((error) =>
@@ -337,12 +358,12 @@ function Homepage() {
 
         <div className="mb-4">
           <select
-            className="border rounded p-2"
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}>
             <option value="OnTime">On Time</option>
             <option value="Late">Late</option>
             <option value="Absent">Absent</option>
+            <option value="Excused">Excused</option>
           </select>
         </div>
 
@@ -363,6 +384,10 @@ function Homepage() {
                 <stop offset="0%" stopColor="#f87171" />
                 <stop offset="100%" stopColor="#ef4444" />
               </linearGradient>
+              <linearGradient id="excusedGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#60a5fa" />
+                <stop offset="100%" stopColor="#3b82f6" />
+              </linearGradient>
             </defs>
 
             <CartesianGrid strokeDasharray="3 3" />
@@ -372,7 +397,7 @@ function Homepage() {
                 name.length > 10 ? name.slice(0, 10) + "..." : name
               }
             />
-            <YAxis />
+            <YAxis allowDecimals={false} />
             <Tooltip
               formatter={(value, name, props) => [
                 value,
@@ -380,7 +405,11 @@ function Homepage() {
               ]}
               labelFormatter={(label) => label}
             />
-            <Bar dataKey={selectedType} fill={gradientMap[selectedType]} />
+            <Bar
+              dataKey={selectedType}
+              fill={gradientMap[selectedType]}
+              radius={[8, 8, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
