@@ -268,6 +268,13 @@ function Dashboard() {
     ? financeData.filter((item) => item.month <= selectedMonth)
     : financeData;
 
+  const linkClasses = (path) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+      location.pathname === path
+        ? "bg-gray-700 text-white font-semibold"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
+
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:8080/api/users/logout");
@@ -282,16 +289,14 @@ function Dashboard() {
     <div className="flex h-screen bg-gray-900 text-white">
       <button
         className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+        onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex`}
-      >
+        } md:translate-x-0 md:static md:flex`}>
         <div>
           <div className="mb-4">
             <img
@@ -304,36 +309,21 @@ function Dashboard() {
             N-Tech Hardware
           </h2>
 
-          <nav className="space-y-4 text-white">
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+          <nav className="space-y-2">
+            <Link to="/dashboard" className={linkClasses("/dashboard")}>
               <FaTachometerAlt /> Dashboard
             </Link>
-            <Link
-              to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+            <Link to="/inventory" className={linkClasses("/inventory")}>
               <FaBox /> Inventory
             </Link>
-            <Link
-              to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+            <Link to="/orders" className={linkClasses("/orders")}>
               <FaClipboardList /> Orders
             </Link>
-            <Link
-              to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+            <Link to="/notifications" className={linkClasses("/notifications")}>
               <FaBell /> Notifications
             </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
-              <FaUser /> Profile Management
+            <Link to="/profile" className={linkClasses("/profile")}>
+              <FaUser /> Attendance Monitoring
             </Link>
           </nav>
         </div>
@@ -341,8 +331,7 @@ function Dashboard() {
         <div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white"
-          >
+            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white">
             <FaSignOutAlt /> Logout
           </button>
         </div>
@@ -356,16 +345,14 @@ function Dashboard() {
             <button
               onClick={handleTimeIn}
               disabled={timeInClicked}
-              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white transition disabled:opacity-50"
-            >
+              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white transition disabled:opacity-50">
               Time In
             </button>
 
             <button
               onClick={handleTimeOut}
               disabled={timeOutClicked}
-              className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition disabled:opacity-50"
-            >
+              className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition disabled:opacity-50">
               Time Out
             </button>
 
@@ -376,8 +363,7 @@ function Dashboard() {
                     alertType === "success"
                       ? "bg-green-100 text-green-800"
                       : "bg-red-100 text-red-800"
-                  }`}
-                >
+                  }`}>
                   {alertMessage}
                 </div>
               </div>
@@ -452,8 +438,7 @@ function Dashboard() {
                             x1="0"
                             y1="0"
                             x2="1"
-                            y2="1"
-                          >
+                            y2="1">
                             <stop offset="0%" stopColor="#ff0000" />
                             <stop offset="100%" stopColor="#ffa500" />
                           </linearGradient>
@@ -462,8 +447,7 @@ function Dashboard() {
                             x1="0"
                             y1="0"
                             x2="1"
-                            y2="1"
-                          >
+                            y2="1">
                             <stop offset="0%" stopColor="#ff4500" />
                             <stop offset="100%" stopColor="#ffd700" />
                           </linearGradient>
@@ -478,8 +462,7 @@ function Dashboard() {
                           label={({ name, percent }) =>
                             `${name}: ${(percent * 100).toFixed(0)}%`
                           }
-                          labelLine={false}
-                        >
+                          labelLine={false}>
                           {data.map((entry, index) => (
                             <Cell
                               key={`cell-${index}`}
@@ -512,8 +495,7 @@ function Dashboard() {
                                 flexWrap: "wrap",
                                 gap: "10px",
                                 justifyContent: "center",
-                              }}
-                            >
+                              }}>
                               {payload.map((entry, index) => {
                                 const fill =
                                   entry.value === "Sold Items"
@@ -527,8 +509,7 @@ function Dashboard() {
                                       display: "flex",
                                       alignItems: "center",
                                       gap: "6px",
-                                    }}
-                                  >
+                                    }}>
                                     <svg width="14" height="14">
                                       <rect
                                         width="14"
@@ -540,8 +521,7 @@ function Dashboard() {
                                       style={{
                                         color: "#000",
                                         fontSize: "12px",
-                                      }}
-                                    >
+                                      }}>
                                       {entry.value}
                                     </span>
                                   </li>
@@ -584,8 +564,7 @@ function Dashboard() {
                             width: `${item.value}%`,
                             backgroundImage:
                               "linear-gradient(to right, #ff0000, #ffa500)",
-                          }}
-                        ></div>
+                          }}></div>
                       </div>
                     </div>
                   ))}

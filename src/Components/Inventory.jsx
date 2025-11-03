@@ -226,6 +226,13 @@ function Inventory() {
     }, 3000);
   };
 
+  const linkClasses = (path) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+      location.pathname === path
+        ? "bg-gray-700 text-white font-semibold"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
+
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:8080/api/users/logout");
@@ -245,24 +252,21 @@ function Inventory() {
               alert.type === "success"
                 ? "bg-green-100 text-green-800 border border-green-400"
                 : "bg-red-100 text-red-800 border border-red-400"
-            }`}
-          >
+            }`}>
             {alert.message}
           </div>
         </div>
       )}
       <button
         className="md:hidden fixed top-4 left-4 z-50 text-white bg-black p-2 rounded"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+        onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-black p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex`}
-      >
+        } md:translate-x-0 md:static md:flex`}>
         <div>
           <div className="mb-4">
             <img
@@ -275,36 +279,21 @@ function Inventory() {
             N-Tech Hardware
           </h2>
 
-          <nav className="space-y-4 text-white">
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+          <nav className="space-y-2">
+            <Link to="/dashboard" className={linkClasses("/dashboard")}>
               <FaTachometerAlt /> Dashboard
             </Link>
-            <Link
-              to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+            <Link to="/inventory" className={linkClasses("/inventory")}>
               <FaBox /> Inventory
             </Link>
-            <Link
-              to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+            <Link to="/orders" className={linkClasses("/orders")}>
               <FaClipboardList /> Orders
             </Link>
-            <Link
-              to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
+            <Link to="/notifications" className={linkClasses("/notifications")}>
               <FaBell /> Notifications
             </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded"
-            >
-              <FaUser /> Profile Management
+            <Link to="/profile" className={linkClasses("/profile")}>
+              <FaUser /> Attendance Monitoring
             </Link>
           </nav>
         </div>
@@ -312,8 +301,7 @@ function Inventory() {
         <div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white"
-          >
+            className="w-full flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded text-white">
             <FaSignOutAlt /> Logout
           </button>
         </div>
@@ -340,14 +328,12 @@ function Inventory() {
         <div className="bg-white shadow px-10 py-4 relative flex items-center">
           <button
             className="absolute left-0 z-10 bg-gray-300 hover:bg-black hover:text-white rounded-full p-2 ml-2"
-            onClick={() => scroll("left")}
-          >
+            onClick={() => scroll("left")}>
             <FaChevronLeft />
           </button>
           <div
             ref={scrollRef}
-            className="flex gap-4 text-sm font-semibold whitespace-nowrap overflow-x-auto scroll-smooth scrollbar-hide mx-10"
-          >
+            className="flex gap-4 text-sm font-semibold whitespace-nowrap overflow-x-auto scroll-smooth scrollbar-hide mx-10">
             {["All Categories", "Tools", "Electronics", "Plumbing Tools"].map(
               (category) => (
                 <div
@@ -362,8 +348,7 @@ function Inventory() {
                     setSearchQuery("");
                     setItems([]);
                     fetchItems(category);
-                  }}
-                >
+                  }}>
                   {category}
                 </div>
               )
@@ -371,8 +356,7 @@ function Inventory() {
           </div>
           <button
             className="absolute right-0 z-10 bg-gray-300 hover:bg-black hover:text-white rounded-full p-2 mr-2"
-            onClick={() => scroll("right")}
-          >
+            onClick={() => scroll("right")}>
             <FaChevronRight />
           </button>
         </div>
@@ -382,8 +366,7 @@ function Inventory() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <button
               onClick={handleAddNew}
-              className="w-full min-h-[350px] flex flex-col items-center justify-center text-black border-4 border-dashed border-black bg-transparent hover:bg-black hover:text-white transition text-lg font-semibold rounded-[10px]"
-            >
+              className="w-full min-h-[350px] flex flex-col items-center justify-center text-black border-4 border-dashed border-black bg-transparent hover:bg-black hover:text-white transition text-lg font-semibold rounded-[10px]">
               <FaPlus size={28} className="mb-2" />
               Add New Item
             </button>
@@ -392,8 +375,7 @@ function Inventory() {
               items.slice(0, 3).map((item, index) => (
                 <div
                   key={index}
-                  className="bg-white shadow rounded-[10px] p-3 flex flex-col justify-between min-h-[350px]"
-                >
+                  className="bg-white shadow rounded-[10px] p-3 flex flex-col justify-between min-h-[350px]">
                   {item.imagePath?.trim() ? (
                     <img
                       src={`http://localhost:8080/${item.imagePath.replace(
@@ -437,16 +419,14 @@ function Inventory() {
                   <div className="mt-4 flex gap-2">
                     <button
                       className="flex items-center justify-center gap-2 bg-gray-500 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-gray-600"
-                      onClick={() => setConfirmDeleteId(item.id)}
-                    >
+                      onClick={() => setConfirmDeleteId(item.id)}>
                       <FaTimes />
                       <span>Delete</span>
                     </button>
 
                     <button
                       className="flex items-center justify-center gap-2 bg-yellow-600 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-yellow-700"
-                      onClick={() => handleEdit(item)}
-                    >
+                      onClick={() => handleEdit(item)}>
                       <FaEdit />
                       <span>Edit</span>
                     </button>
@@ -460,8 +440,7 @@ function Inventory() {
               {items.slice(3).map((item, index) => (
                 <div
                   key={index + 3}
-                  className="bg-white shadow rounded-[10px] p-3 flex flex-col justify-between min-h-[350px]"
-                >
+                  className="bg-white shadow rounded-[10px] p-3 flex flex-col justify-between min-h-[350px]">
                   {item.imagePath?.trim() ? (
                     <img
                       src={`http://localhost:8080/${item.imagePath.replace(
@@ -505,16 +484,14 @@ function Inventory() {
                   <div className="mt-4 flex gap-2">
                     <button
                       className="flex items-center justify-center gap-2 bg-gray-500 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-gray-600"
-                      onClick={() => setConfirmDeleteId(item.id)}
-                    >
+                      onClick={() => setConfirmDeleteId(item.id)}>
                       <FaTimes />
                       <span>Delete</span>
                     </button>
 
                     <button
                       className="flex items-center justify-center gap-2 bg-yellow-600 text-white text-md py-1.5 rounded-[5px] w-full hover:bg-yellow-700"
-                      onClick={() => handleEdit(item)}
-                    >
+                      onClick={() => handleEdit(item)}>
                       <FaEdit />
                       <span>Edit</span>
                     </button>
@@ -536,29 +513,25 @@ function Inventory() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50"
-              >
+                className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center"
-                >
+                  className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
                   <p className="text-lg mb-4">
                     Are you sure you want to delete this item?
                   </p>
                   <div className="flex justify-center gap-4">
                     <button
                       onClick={() => handleDelete(confirmDeleteId)}
-                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                    >
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
                       Delete
                     </button>
                     <button
                       onClick={() => setConfirmDeleteId(null)}
-                      className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                    >
+                      className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
                       Cancel
                     </button>
                   </div>
@@ -574,8 +547,7 @@ function Inventory() {
                   alertType === "success"
                     ? "bg-green-100 text-green-800 border border-green-400"
                     : "bg-red-100 text-red-800 border border-red-400"
-                }`}
-              >
+                }`}>
                 {alertMessage}
               </div>
             </div>
@@ -596,8 +568,7 @@ function Inventory() {
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 50 }}
-                  transition={{ duration: 0.3 }}
-                >
+                  transition={{ duration: 0.3 }}>
                   <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                       {editMode ? (
@@ -638,8 +609,7 @@ function Inventory() {
                             name="category"
                             value={formData.category}
                             onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          >
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             <option value="">Select Category</option>
                             <option value="tools">Tools</option>
                             <option value="plumbing tools">
@@ -657,8 +627,7 @@ function Inventory() {
                             name="unit"
                             value={formData.unit}
                             onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          >
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             <option value="">Select Unit</option>
                             <option value="kilo">Kilo</option>
                             <option value="box">Box</option>
@@ -692,14 +661,12 @@ function Inventory() {
                         <button
                           type="button"
                           onClick={() => setShowModal(false)}
-                          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
-                        >
+                          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
                           Cancel
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900"
-                        >
+                          className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900">
                           {editMode ? "Update Item" : "Add Item"}
                         </button>
                       </div>

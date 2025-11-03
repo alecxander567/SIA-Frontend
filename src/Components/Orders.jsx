@@ -90,9 +90,12 @@ function Orders() {
     return matchesStatus && matchesSearch && matchesDate;
   });
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchQuery);
-  };
+  const linkClasses = (path) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+      location.pathname === path
+        ? "bg-gray-700 text-white font-semibold"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
 
   const handleLogout = async () => {
     try {
@@ -128,20 +131,20 @@ function Orders() {
             N-Tech Hardware
           </h2>
 
-          <nav className="space-y-4 text-white">
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaTachometerAlt /> Dashboard
+          <nav className="space-y-2">
+            <Link to="/dashboard" className={linkClasses("/dashboard")}>
+              <div className="flex items-center gap-3">
+                <FaTachometerAlt /> Dashboard
+              </div>
             </Link>
-            <Link
-              to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaBox /> Inventory
+
+            <Link to="/inventory" className={linkClasses("/inventory")}>
+              <div className="flex items-center gap-3">
+                <FaBox /> Inventory
+              </div>
             </Link>
-            <Link
-              to="/orders"
-              className="flex items-center justify-between hover:bg-gray-700 px-3 py-2 rounded">
+
+            <Link to="/orders" className={linkClasses("/orders")}>
               <div className="flex items-center gap-3">
                 <FaClipboardList /> Orders
               </div>
@@ -151,15 +154,17 @@ function Orders() {
                 </span>
               )}
             </Link>
-            <Link
-              to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaBell /> Notifications
+
+            <Link to="/notifications" className={linkClasses("/notifications")}>
+              <div className="flex items-center gap-3">
+                <FaBell /> Notifications
+              </div>
             </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaUser /> Profile Management
+
+            <Link to="/profile" className={linkClasses("/profile")}>
+              <div className="flex items-center gap-3">
+                <FaUser /> Attendance Monitoring
+              </div>
             </Link>
           </nav>
         </div>

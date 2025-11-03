@@ -67,8 +67,7 @@ function Landingpage() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-black text-2xl"
-          >
+            className="md:hidden text-black text-2xl">
             {isOpen ? <FaTimes /> : <FaBars />}
           </button>
 
@@ -78,42 +77,36 @@ function Landingpage() {
               isOpen
                 ? "max-h-[500px] opacity-100 py-6"
                 : "max-h-0 opacity-0 py-0"
-            }`}
-          >
+            }`}>
             <div className="flex flex-col items-center space-y-4 text-black font-medium">
               <a
                 href="#home"
                 className="hover:text-gray-600"
-                onClick={() => setIsOpen(false)}
-              >
+                onClick={() => setIsOpen(false)}>
                 Home
               </a>
               <a
                 href="#products"
                 className="hover:text-gray-600"
-                onClick={() => setIsOpen(false)}
-              >
+                onClick={() => setIsOpen(false)}>
                 Products
               </a>
               <a
                 href="#services"
                 className="hover:text-gray-600"
-                onClick={() => setIsOpen(false)}
-              >
+                onClick={() => setIsOpen(false)}>
                 Services
               </a>
               <a
                 href="#about"
                 className="hover:text-gray-600"
-                onClick={() => setIsOpen(false)}
-              >
+                onClick={() => setIsOpen(false)}>
                 About Us
               </a>
               <a
                 href="#contacts"
                 className="hover:text-gray-600"
-                onClick={() => setIsOpen(false)}
-              >
+                onClick={() => setIsOpen(false)}>
                 Contacts
               </a>
               <Link to="/login">
@@ -132,8 +125,7 @@ function Landingpage() {
 
         <section
           className="bg-gradient-to-r from-black via-black to-gray-100 text-white px-4 sm:px-6 md:px-10 lg:px-20 pt-20 pb-10 min-h-screen flex items-center justify-center"
-          id="home"
-        >
+          id="home">
           <div className="flex flex-col md:flex-row w-full items-center md:items-start justify-between gap-10">
             <div className="max-w-xl text-center md:text-left flex flex-col items-center md:items-start">
               <h2 className="text-3xl sm:text-4xl font-bold mb-6">
@@ -199,8 +191,7 @@ function Landingpage() {
             ].map((product, idx) => (
               <div
                 key={idx}
-                className="shadow-lg p-6 rounded-lg flex flex-col justify-between h-full"
-              >
+                className="shadow-lg p-6 rounded-lg flex flex-col justify-between h-full">
                 <div>
                   <img
                     src={product.src}

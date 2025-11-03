@@ -209,14 +209,12 @@ function RiderHomepage() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleTimeIn}
-              className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white transition"
-            >
+              className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white transition">
               Time In
             </button>
             <button
               onClick={handleTimeOut}
-              className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition"
-            >
+              className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white transition">
               Time Out
             </button>
 
@@ -227,8 +225,7 @@ function RiderHomepage() {
                     alertType === "success"
                       ? "bg-green-100 text-green-800"
                       : "bg-red-100 text-red-800"
-                  }`}
-                >
+                  }`}>
                   {alertMessage}
                 </div>
               </div>
@@ -238,8 +235,7 @@ function RiderHomepage() {
                 localStorage.removeItem("user");
                 window.location.href = "http://localhost:5173";
               }}
-              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white transition"
-            >
+              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white transition">
               Logout
             </button>
           </div>
@@ -316,8 +312,7 @@ function RiderHomepage() {
             filteredOrders.map((order, index) => (
               <div
                 key={order.orderId || index}
-                className="relative bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col w-full p-8"
-              >
+                className="relative bg-white rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col w-full p-8">
                 {/* Truck Icon in Background */}
                 <FaTruck
                   className={`absolute right-15 top-25 transform -translate-y-1/2 w-45 h-45 opacity-100 pointer-events-none ${
@@ -394,16 +389,14 @@ function RiderHomepage() {
                       : "hover:bg-green-500 hover:text-white"
                   }`}
                   disabled={order.status === "Delivered"}
-                  onClick={() => handleMarkAsDelivered(order.orderId)}
-                >
+                  onClick={() => handleMarkAsDelivered(order.orderId)}>
                   {order.status === "Delivered"
                     ? "Delivered"
                     : "Mark as Delivered"}
                 </button>
                 <button
                   className="px-4 py-2 rounded text-gray-700 border-2 mt-2 border-gray-400 hover:bg-gray-400 hover:text-white transition font-semibold"
-                  onClick={() => handleShowLocation(order.address)}
-                >
+                  onClick={() => handleShowLocation(order.address)}>
                   Show Location
                 </button>
               </div>
@@ -416,8 +409,7 @@ function RiderHomepage() {
             <div className="bg-white rounded-xl w-11/12 md:w-3/4 lg:w-1/2 p-4 relative">
               <button
                 className="absolute top-2 right-2 text-gray-700 hover:text-gray-900 font-bold text-lg"
-                onClick={() => setShowMapModal(false)}
-              >
+                onClick={() => setShowMapModal(false)}>
                 &times;
               </button>
 
@@ -430,8 +422,7 @@ function RiderHomepage() {
                   src={`https://www.google.com/maps?q=${encodeURIComponent(
                     mapAddress
                   )}&output=embed`}
-                  allowFullScreen
-                ></iframe>
+                  allowFullScreen></iframe>
               </div>
             </div>
           </div>

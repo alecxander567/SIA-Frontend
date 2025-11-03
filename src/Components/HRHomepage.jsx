@@ -49,7 +49,6 @@ function Homepage() {
         const rawData = response.data;
         const summary = {};
 
-        // Flatten the nested structure
         rawData.forEach((user) => {
           const userName = user.name;
 
@@ -64,9 +63,8 @@ function Homepage() {
             };
           }
 
-          // Loop through each user's attendance array
           user.attendance.forEach((record) => {
-            const status = record.status.toUpperCase(); // Convert to uppercase
+            const status = record.status.toUpperCase();
 
             if (
               status === "ON TIME" ||
@@ -84,7 +82,6 @@ function Homepage() {
           });
         });
 
-        console.log("Processed attendance data:", Object.values(summary)); // Debug
         setAttendanceData(Object.values(summary));
       })
       .catch((error) =>

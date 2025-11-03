@@ -13,30 +13,32 @@ import {
   FaTimesCircle,
   FaDollarSign,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 function Notifications() {
   const navigate = useNavigate();
+  const location = useLocation(); // <-- added
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [orders, setOrders] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const today = new Date().toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(today);
+
   const formattedDate = selectedDate
     ? new Date(selectedDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       })
-    : "All Date";
+    : "All Dates";
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get("http://localhost:8080/api/orders");
-        setOrders(response.data);
+        setOrders(response.data || []);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
       }
@@ -47,13 +49,16 @@ function Notifications() {
     return () => clearInterval(interval);
   }, []);
 
+  const orderDateOnly = (order) =>
+    order?.order_date ? order.order_date.split("T")[0] : "";
+
   const visibleOrders = orders.filter((order) => {
-    const matchesSearch =
-      order.orderName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer_name.toLowerCase().includes(searchQuery.toLowerCase());
+    const name = (order.orderName || order.item?.itemName || "").toLowerCase();
+    const customer = (order.customer_name || "").toLowerCase();
+    const q = searchQuery.toLowerCase();
 
-    const matchesDate = !selectedDate || order.order_date === selectedDate;
-
+    const matchesSearch = !q || name.includes(q) || customer.includes(q);
+    const matchesDate = !selectedDate || orderDateOnly(order) === selectedDate;
     const matchesStatus = order.status === "Delivered";
 
     return matchesSearch && matchesDate && matchesStatus;
@@ -62,8 +67,17 @@ function Notifications() {
   const deliveredCount = orders.filter(
     (order) =>
       order.status === "Delivered" &&
-      (!selectedDate || order.order_date === selectedDate)
+      (!selectedDate || orderDateOnly(order) === selectedDate)
   ).length;
+
+  const orderCount = orders.length;
+
+  const linkClasses = (path) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+      location.pathname === path
+        ? "bg-gray-700 text-white font-semibold"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
 
   const handleLogout = async () => {
     try {
@@ -99,25 +113,26 @@ function Notifications() {
             N-Tech Hardware
           </h2>
 
-          <nav className="space-y-4 text-white">
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaTachometerAlt /> Dashboard
+          <nav className="space-y-2">
+            <Link to="/dashboard" className={linkClasses("/dashboard")}>
+              <div className="flex items-center gap-3">
+                <FaTachometerAlt /> Dashboard
+              </div>
             </Link>
-            <Link
-              to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaBox /> Inventory
+
+            <Link to="/inventory" className={linkClasses("/inventory")}>
+              <div className="flex items-center gap-3">
+                <FaBox /> Inventory
+              </div>
             </Link>
-            <Link
-              to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaClipboardList /> Orders
+
+            <Link to="/orders" className={linkClasses("/orders")}>
+              <div className="flex items-center gap-3">
+                <FaClipboardList /> Orders
+              </div>
             </Link>
-            <Link
-              to="/notifications"
-              className="flex items-center justify-between hover:bg-gray-700 px-3 py-2 rounded">
+
+            <Link to="/notifications" className={linkClasses("/notifications")}>
               <div className="flex items-center gap-3">
                 <FaBell /> Notifications
               </div>
@@ -127,10 +142,11 @@ function Notifications() {
                 </span>
               )}
             </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaUser /> Profile Management
+
+            <Link to="/profile" className={linkClasses("/profile")}>
+              <div className="flex items-center gap-3">
+                <FaUser /> Attendance Monitoring
+              </div>
             </Link>
           </nav>
         </div>
@@ -186,13 +202,13 @@ function Notifications() {
             {visibleOrders.length > 0 ? (
               visibleOrders.map((order) => (
                 <div
-                  key={order.orderId}
+                  key={order.orderId || order.id}
                   className="flex flex-col gap-3 px-6 py-4 border-b last:border-b-0 hover:bg-gray-50 transition shadow-sm rounded-lg">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <FaBox className="text-blue-500" />
                       <h2 className="font-semibold text-lg">
-                        {order.orderName}
+                        {order.orderName || order.item?.itemName || "Unnamed"}
                       </h2>
                     </div>
                     <span
@@ -212,17 +228,17 @@ function Notifications() {
 
                   <div className="flex items-center gap-2 text-gray-600">
                     <FaUser className="text-purple-500" />
-                    <span>{order.customer_name}</span>
+                    <span>{order.customer_name || "Unknown customer"}</span>
                   </div>
 
                   <div className="flex items-center gap-6 text-gray-700 text-sm">
                     <span className="flex items-center gap-1">
-                      <FaDollarSign className="text-green-500" /> $
-                      {order.total_price}
+                      <FaDollarSign className="text-green-500" />{" "}
+                      {order.total_price ?? "0.00"}
                     </span>
                     <span className="flex items-center gap-1">
                       <FaBox className="text-yellow-500" /> Qty:{" "}
-                      {order.quantity}
+                      {order.quantity ?? 0}
                     </span>
                   </div>
                 </div>

@@ -103,6 +103,13 @@ function ProfileManagement() {
       })
     : "Select Date";
 
+  const linkClasses = (path) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+      location.pathname === path
+        ? "bg-gray-700 text-white font-semibold"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
+
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:8080/api/users/logout");
@@ -137,31 +144,21 @@ function ProfileManagement() {
             N-Tech Hardware
           </h2>
 
-          <nav className="space-y-4 text-white">
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+          <nav className="space-y-2">
+            <Link to="/dashboard" className={linkClasses("/dashboard")}>
               <FaTachometerAlt /> Dashboard
             </Link>
-            <Link
-              to="/inventory"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+            <Link to="/inventory" className={linkClasses("/inventory")}>
               <FaBox /> Inventory
             </Link>
-            <Link
-              to="/orders"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+            <Link to="/orders" className={linkClasses("/orders")}>
               <FaClipboardList /> Orders
             </Link>
-            <Link
-              to="/notifications"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
+            <Link to="/notifications" className={linkClasses("/notifications")}>
               <FaBell /> Notifications
             </Link>
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 hover:bg-gray-700 px-3 py-2 rounded">
-              <FaUser /> Profile Management
+            <Link to="/profile" className={linkClasses("/profile")}>
+              <FaUser /> Attendance Monitoring
             </Link>
           </nav>
         </div>
