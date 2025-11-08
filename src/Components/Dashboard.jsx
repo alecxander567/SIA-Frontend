@@ -66,7 +66,6 @@ function Dashboard() {
       const res = await axios.post(
         `http://localhost:8080/api/users/timein/${userId}`
       );
-      console.log("TimeIn Response:", res.data);
 
       const { message, status, timeIn } = res.data;
 
@@ -106,8 +105,6 @@ function Dashboard() {
         `http://localhost:8080/api/users/timeout/${userId}`
       );
 
-      console.log("TimeOut Response:", res.data);
-
       const { message, timeOut } = res.data;
 
       setAlertType("success");
@@ -141,10 +138,8 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://sharp-candies-hang.loca.lt/Sales-Overview")
+      .get("https://quiet-dolls-call.loca.lt/Sales-Overview")
       .then((res) => {
-        console.log("API Data:", res.data);
-
         const sold = Number(res.data?.sold_items ?? 0);
         const remaining = Number(res.data?.remaining_items ?? 0);
 
@@ -161,7 +156,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://sharp-candies-hang.loca.lt/");
+        const res = await axios.get("https://quiet-dolls-call.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -249,7 +244,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("https://sharp-candies-hang.loca.lt/profitexpenses")
+    fetch("https://quiet-dolls-call.loca.lt/profitexpenses")
       .then((res) => res.json())
       .then((data) => {
         const combinedData = data.months.map((month, index) => ({

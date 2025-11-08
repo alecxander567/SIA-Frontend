@@ -93,10 +93,6 @@ function Inventory() {
     }
   };
 
-  const handleSearch = () => {
-    fetchItems();
-  };
-
   useEffect(() => {
     fetchItems();
   }, [selectedCategory, searchQuery]);
@@ -199,10 +195,6 @@ function Inventory() {
     });
     setEditMode(false);
     setShowModal(true);
-  };
-
-  const confirmDelete = (id) => {
-    setConfirmDeleteId(id);
   };
 
   const handleImageChange = (e) => {

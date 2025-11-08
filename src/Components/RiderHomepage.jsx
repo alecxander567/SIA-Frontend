@@ -118,11 +118,7 @@ function RiderHomepage() {
 
       setOrdersToday(filteredOrders);
 
-      console.log("Fetched orders:", filteredOrders);
       filteredOrders.forEach((order) => {
-        console.log(
-          `Order ${order.orderId}: status = ${order.status}, payment = ${order.payment_type}`
-        );
       });
     } catch (err) {
       console.error("Failed to fetch orders:", err);

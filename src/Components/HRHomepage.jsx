@@ -44,7 +44,7 @@ function Homepage() {
 
   useEffect(() => {
     axios
-      .get("https://sharp-candies-hang.loca.lt/attendance")
+      .get("https://lazy-readers-spend.loca.lt/attendance")
       .then((response) => {
         const rawData = response.data;
         const summary = {};
@@ -237,7 +237,7 @@ function Homepage() {
         `http://localhost:8080/api/users/${userId}/excuse`
       );
 
-      setAlertMessage(`Employee excused successfully`);
+      setAlertMessage("✅ Employee excused successfully");
       setAlertType("success");
       setTimeout(() => setAlertMessage(""), 3000);
 
@@ -247,9 +247,22 @@ function Homepage() {
       setEmployeesWithAttendance(refreshRes.data);
     } catch (err) {
       console.error("Error in handleExcuse:", err);
-      setAlertMessage(err.response?.data?.message || "Error excusing employee");
+
+      let errorMsg = "❌ Error excusing employee. Please try again.";
+
+      if (err.response) {
+        if (err.response.data?.message) {
+          errorMsg = `⚠️ ${err.response.data.message}`;
+        } else if (typeof err.response.data === "string") {
+          errorMsg = `⚠️ ${err.response.data}`;
+        }
+      } else if (err.request) {
+        errorMsg = "❌ Cannot connect to the server. Please try again later.";
+      }
+
+      setAlertMessage(errorMsg);
       setAlertType("error");
-      setTimeout(() => setAlertMessage(""), 3000);
+      setTimeout(() => setAlertMessage(""), 4000);
     }
   };
 
@@ -426,7 +439,7 @@ function Homepage() {
           <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl">
             <thead className="bg-gray-900">
               <tr>
-                {["ID", "Name", "Department", "Status", "Action"].map(
+                {["ID", "Employee Name", "Department", "Status", "Action"].map(
                   (header) => (
                     <th
                       key={header}
