@@ -44,7 +44,7 @@ function Homepage() {
 
   useEffect(() => {
     axios
-      .get("https://lazy-readers-spend.loca.lt/attendance")
+      .get("https://cute-teams-sing.loca.lt/attendance")
       .then((response) => {
         const rawData = response.data;
         const summary = {};

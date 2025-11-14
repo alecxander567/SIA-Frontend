@@ -174,7 +174,7 @@ function ProfileManagement() {
 
       <main className="flex-1 bg-gray-500 text-black overflow-y-auto">
         <header className="h-16 bg-black text-white px-10 flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Profile Management</h1>
+          <h1 className="text-lg font-semibold">Attendance Monitoring</h1>
           <div></div>
           <div className="relative w-80">
             <input

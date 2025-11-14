@@ -138,7 +138,7 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("https://quiet-dolls-call.loca.lt/Sales-Overview")
+      .get("https://bitter-heads-film.loca.lt/Sales-Overview")
       .then((res) => {
         const sold = Number(res.data?.sold_items ?? 0);
         const remaining = Number(res.data?.remaining_items ?? 0);
@@ -156,7 +156,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTopItems = async () => {
       try {
-        const res = await axios.get("https://quiet-dolls-call.loca.lt/");
+        const res = await axios.get("https://bitter-heads-film.loca.lt/");
         const formatted = res.data.map((entry) => ({
           name: entry.item.itemName,
           value: parseFloat(entry.item.percentage),
@@ -244,7 +244,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("https://quiet-dolls-call.loca.lt/profitexpenses")
+    fetch("https://bitter-heads-film.loca.lt/profitexpenses")
       .then((res) => res.json())
       .then((data) => {
         const combinedData = data.months.map((month, index) => ({
